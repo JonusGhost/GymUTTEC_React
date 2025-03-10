@@ -1,13 +1,24 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaCog } from "react-icons/fa"; // Ícono de configuración
+import { FaCog, FaUser } from "react-icons/fa"; // Íconos
+import { useNavigate } from "react-router-dom"; // Para redirección
 
 export default function AlumnoTalleres() {
+  const navigate = useNavigate(); // Hook para redirección
+
   return (
     <div className="container-fluid p-0">
-      {/* Barra de título con el logo y los puntos de configuración */}
+      {/* Barra de título con el logo, usuario y configuración */}
       <header className="d-flex justify-content-between align-items-center py-4 px-3 bg-success text-white">
         <h1 className="fs-3">GYMUTTEC</h1>
-        <FaCog size={24} className="text-white" />
+        <div className="d-flex align-items-center">
+
+          
+          {/* Botón para ir a Información del Alumno */}
+          <button className="btn btn-outline-light me-3" onClick={() => navigate("/perfilAlumno")}>
+         <FaUser size={24} />
+          </button>
+
+        </div>
       </header>
 
       {/* Subtítulo de Talleres Inscritos */}

@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FaUser, FaLock } from "react-icons/fa";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [matricula, setmatricula] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -17,28 +17,33 @@ export default function LoginPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ matricula, password }),
       });
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Error al iniciar sesión");
+      if (!response.ok || data.error) {
+        throw new Error(data.error || "Error al iniciar sesión");
       }
 
       // Guardar token y usuario en localStorage
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("user", JSON.stringify({ id: data.idUsuario, role: data.rolUsuario }));
 
       // Redirigir según el rol del usuario
-      if (data.user.role === "E") {
-        navigate("/alumno-talleres"); // 🔹 Redirigir al componente correcto
-      } else if (data.user.role === "A") {
-        navigate("/admin");
-      } else if (data.user.role === "D") {
-        navigate("/docente");
-      } else {
-        navigate("/");
+      switch (data.rolUsuario) {
+        case "E":
+          navigate("/AlumnoTalleres");
+          break;
+        case "A":
+          navigate("/admin");
+          break;
+        case "D":
+          navigate("/docente");
+          break;
+        default:
+          navigate("/");
+          break;
       }
     } catch (err) {
       setError(err.message);
@@ -65,8 +70,8 @@ export default function LoginPage() {
               type="email"
               className="form-control border-success fs-5"
               placeholder="Matrícula"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={matricula}
+              onChange={(e) => setmatricula(e.target.value)}
             />
           </div>
           <div className="mb-4 input-group">
