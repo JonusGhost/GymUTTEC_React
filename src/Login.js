@@ -1,13 +1,48 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaUser, FaLock } from "react-icons/fa";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log("Email:", email, "Password:", password);
+  const handleLogin = async () => {
+    setError("");
+    try {
+      const response = await fetch("http://localhost:8000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Error al iniciar sesión");
+      }
+
+      // Guardar token y usuario en localStorage
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Redirigir según el rol del usuario
+      if (data.user.role === "E") {
+        navigate("/alumno-talleres"); // 🔹 Redirigir al componente correcto
+      } else if (data.user.role === "A") {
+        navigate("/admin");
+      } else if (data.user.role === "D") {
+        navigate("/docente");
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -16,8 +51,14 @@ export default function LoginPage() {
         <div className="card-body text-center">
           <h2 className="text-white mb-4 fs-1">GYMUTTEC</h2>
           <div className="mb-4">
-            <img src="https://media.istockphoto.com/id/1391410249/photo/sports-and-gym-activities.jpg?s=612x612&w=0&k=20&c=1S-hAmT-CkRtdYV_hcKi1lZdQkXAN_mCy3ebIXlUEnE=" alt="Logo Gimnasio" className="img-fluid rounded" style={{ width: "700px", height: "400px" }} />
+            <img 
+              src="https://media.istockphoto.com/id/1391410249/photo/sports-and-gym-activities.jpg?s=612x612&w=0&k=20&c=1S-hAmT-CkRtdYV_hcKi1lZdQkXAN_mCy3ebIXlUEnE="
+              alt="Logo Gimnasio" 
+              className="img-fluid rounded"
+              style={{ width: "700px", height: "400px" }}
+            />
           </div>
+          {error && <div className="alert alert-danger">{error}</div>}
           <div className="mb-4 input-group">
             <span className="input-group-text bg-success text-white fs-4"><FaUser /></span>
             <input
