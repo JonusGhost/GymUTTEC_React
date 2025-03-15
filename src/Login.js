@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FaUser, FaLock } from "react-icons/fa";
 
 export default function LoginPage() {
-  const [matricula, setmatricula] = useState("");
+  const [matricula, setMatricula] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -28,12 +28,12 @@ export default function LoginPage() {
 
       // Guardar token y usuario en localStorage
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify({ id: data.idUsuario, role: data.rolUsuario }));
+      localStorage.setItem("user", JSON.stringify({ idUsuario: matricula, role: data.rolUsuario }));
 
       // Redirigir según el rol del usuario
       switch (data.rolUsuario) {
         case "E":
-          navigate("/AlumnoTalleres");
+          navigate(`/AlumnoTalleres`);
           break;
         case "A":
           navigate("/admin");
@@ -67,11 +67,11 @@ export default function LoginPage() {
           <div className="mb-4 input-group">
             <span className="input-group-text bg-success text-white fs-4"><FaUser /></span>
             <input
-              type="email"
+              type="text"
               className="form-control border-success fs-5"
               placeholder="Matrícula"
               value={matricula}
-              onChange={(e) => setmatricula(e.target.value)}
+              onChange={(e) => setMatricula(e.target.value)}
             />
           </div>
           <div className="mb-4 input-group">
