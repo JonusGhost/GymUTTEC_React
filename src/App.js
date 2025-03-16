@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Im
 import Principal from "./Principal";
 import AlumnoTalleres from "./AlumnoTalleres";
 import InformacionAlumno from "./InformacionAlumno"
+import InformacionTaller from "./InformacionTaller"
 import Login from "./Login"; // Importar el componente Login (asegúrate de tenerlo)
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<Principal />} /> {/* Ruta principal */}
         <Route path="/AlumnoTalleres" element={<AlumnoTalleres />} /> 
         <Route path="/InformacionAlumno" element={<InformacionAlumno />} />
+        <Route path="/InformacionTaller/:id" element={<InformacionTaller/>}/>
         <Route path="/login" element={<Login />} /> {/* Ruta para Login */}
       </Routes>
     </Router>

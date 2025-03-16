@@ -103,7 +103,7 @@ export default function AlumnoTalleres() {
                 key={index}
                 className="card me-3"
                 style={{ width: "200px", border: "none", cursor: "pointer" }}
-                onClick={() => navigate(`/detalleTaller/${taller.id}`)}
+                onClick={() => navigate(`/InformacionTaller/${taller.id}`)}
               >
                 <img
                   src={`http://localhost:8000/storage/${taller.imagen}`}
@@ -131,7 +131,7 @@ export default function AlumnoTalleres() {
                 <div
                   className="d-flex bg-white p-3 rounded shadow-sm"
                   style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/detalleTaller/${taller.id}`)}
+                  onClick={() => navigate(`/InformacionTaller/${taller.id}`)}
                 >
                   <img
                     src={`http://localhost:8000/storage/${taller.imagen}`}
