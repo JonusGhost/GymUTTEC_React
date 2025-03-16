@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { servicioAsistencia } from "../services/userService";
 
@@ -8,15 +8,16 @@ export default function PaseLista() {
   const [error, setError] = useState("");
   const [tallerId, setTallerId] = useState(null);
   const [alumnos, setAlumnos] = useState([]);
+  const [tallerNombre, setTallerNombre] = useState("");
 
   useEffect(() => {
     const fetchAttendanceList = async () => {
       try {
-        // Assuming tallerId is passed through props or state
         if (!tallerId) return;
 
         const response = await servicioAsistencia.obtenerListaAsistencia(tallerId);
-        setAlumnos(response.data);
+        setAlumnos(response.data.alumnos || []);
+        setTallerNombre(response.data.nombre_taller || "Taller");
       } catch (err) {
         setError(err.response?.data?.error || "Error al cargar la lista de asistencia");
       }
@@ -96,7 +97,7 @@ export default function PaseLista() {
           className="btn btn-success w-100 mt-3"
           onClick={handleSubmitAttendance}
         >
-          Subir
+          Guardar Asistencia
         </button>
       </div>
     </div>

@@ -24,44 +24,21 @@ export default function AlumnoTalleres() {
         const matricula = user.idUsuario;
 
         // Obtener los talleres en los que está inscrito el alumno
-        const responseInscritos = await fetch(`http://localhost:8000/api/inscripcion/estudiante/${matricula}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const dataInscritos = await responseInscritos.json();
-
-        if (!responseInscritos.ok || dataInscritos.error) {
-          throw new Error(dataInscritos.error || "Error al cargar los talleres");
-        }
+        const responseInscritos = await servicioEstudiante.obtenerTalleresInscritos(matricula);
+        const dataInscritos = responseInscritos.data;
 
         const talleresInscritosData = await Promise.all(
           dataInscritos.map(async (inscripcion) => {
-            const responseTaller = await fetch(`http://localhost:8000/api/taller/${inscripcion.taller_id}`);
-            const taller = await responseTaller.json();
-            return taller;
+            const responseTaller = await servicioEstudiante.obtenerDetallesTaller(inscripcion.taller_id);
+            return responseTaller.data;
           })
         );
 
         setTalleresInscritos(talleresInscritosData);
 
         // Obtener los talleres disponibles para explorar (no inscritos)
-        const responseExplorar = await fetch("http://localhost:8000/api/talleres", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const dataExplorar = await responseExplorar.json();
-
-        if (!responseExplorar.ok || dataExplorar.error) {
-          throw new Error(dataExplorar.error || "Error al cargar los talleres");
-        }
-
-        setTalleresExplorar(dataExplorar);
+        const responseExplorar = await servicioTaller.obtenerTalleres();
+        setTalleresExplorar(responseExplorar.data);
 
       } catch (err) {
         setError(err.response?.data?.error || "Error al cargar los talleres");

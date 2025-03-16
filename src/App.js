@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Im
 import Principal from "./pages/Principal";
 import AlumnoTalleres from "./pages/AlumnoTalleres";
 import InformacionAlumno from "./pages/InformacionAlumno"
+import InformacionTaller from "./pages/InformacionTaller"; // Import InformacionTaller
 import Login from "./pages/Login"; // Importar el componente Login
 
 

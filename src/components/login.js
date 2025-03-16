@@ -1,65 +1,74 @@
 import React from 'react';
-import {
-    UploadOutlined,
-    UserOutlined,
-    VideoCameraOutlined
-} from '@ant-design/icons';
-import { Layout, Menu, theme } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Layout, Form, Input, Button, Card, theme } from 'antd';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content } = Layout;
 
-const siderStyle: React.CSSProperties = {
-  overflow: 'auto',
-  height: '100vh',
-  position: 'sticky',
-  insetInlineStart: 0,
-  top: 0,
-  bottom: 0,
-  scrollbarWidth: 'thin',
-  scrollbarGutter: 'stable',
-};
-
-const items: MenuProps['items'] = [
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined
-].map((icon, index) => ({
-  key: String(index + 1),
-  icon: React.createElement(icon),
-  label: `Opciones ${index + 1}`,
-}));
-
-const App: React.FC = () => {
+const Login = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const onFinish = (values) => {
+    console.log('Received values:', values);
+    // Here you'll handle login logic
+  };
+
   return (
-    <Layout style={siderStyle} hasSider>
-      <Sider breakpoint='lg' collapsedWidth={0} onBreakpoint={(broken) => {console.log(broken);}} onCollapse={(collapsed, type) => {console.log(collapsed, type);}}>
-        <div className="demo-logo-vertical" />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']} items={items} />
-      </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
-        <Content style={{ margin: '24px 16px 0' }}>
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
+    <Layout style={{ minHeight: '100vh' }}>
+      <Content style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        background: colorBgContainer 
+      }}>
+        <Card 
+          title="GymUTTEC Login" 
+          style={{ 
+            width: 400,
+            borderRadius: borderRadiusLG,
+          }}
+        >
+          <Form
+            name="login"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
           >
-            <p>Contenido</p>
-          </div>
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          GymUTTEC ©{new Date().getFullYear()} Created by Wisdom Technologies
-        </Footer>
-      </Layout>
+            <Form.Item
+              name="username"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+              <Input 
+                prefix={<UserOutlined />} 
+                placeholder="Username" 
+                size="large"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: 'Please input your password!' }]}
+            >
+              <Input.Password
+                prefix={<LockOutlined />}
+                placeholder="Password"
+                size="large"
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Button type="primary" htmlType="submit" block size="large">
+                Log in
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </Content>
+      <Layout.Footer style={{ textAlign: 'center' }}>
+        GymUTTEC ©{new Date().getFullYear()} Created by Wisdom Technologies
+      </Layout.Footer>
     </Layout>
   );
 };
 
-export default App;
+export default Login;
