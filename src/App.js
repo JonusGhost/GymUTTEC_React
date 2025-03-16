@@ -1,9 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Importar React Router
-import Principal from "./Principal";
-import AlumnoTalleres from "./AlumnoTalleres";
-import InformacionAlumno from "./InformacionAlumno"
-import Login from "./Login"; // Importar el componente Login (asegúrate de tenerlo)
+
+import Principal from "./pages/Principal";
+import AlumnoTalleres from "./pages/AlumnoTalleres";
+import InformacionAlumno from "./pages/InformacionAlumno"
+import Login from "./pages/Login"; // Importar el componente Login
+
 
 function App() {
   return (
