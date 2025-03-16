@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Importar React Router
-import Principal from "./pages/Principal";
-import AlumnoTalleres from "./pages/AlumnoTalleres";
-import InformacionAlumno from "./pages/InformacionAlumno"
-import Login from "./pages/Login"; // Importar el componente Login
+import Principal from "./Principal";
+import AlumnoTalleres from "./AlumnoTalleres";
+import InformacionAlumno from "./InformacionAlumno"
+import Login from "./Login"; // Importar el componente Login (asegúrate de tenerlo)
 
 function App() {
   return (
@@ -12,6 +12,7 @@ function App() {
         <Route path="/" element={<Principal />} /> {/* Ruta principal */}
         <Route path="/AlumnoTalleres" element={<AlumnoTalleres />} /> 
         <Route path="/InformacionAlumno" element={<InformacionAlumno />} />
+        <Route path="/InformacionTaller/:id" element={<InformacionTaller/>}/>
         <Route path="/login" element={<Login />} /> {/* Ruta para Login */}
       </Routes>
     </Router>
