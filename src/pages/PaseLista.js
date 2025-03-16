@@ -1,12 +1,47 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
-import { FaArrowLeft } from "react-icons/fa"; // Flecha para regresar
+import { FaArrowLeft } from "react-icons/fa";
+import { servicioAsistencia } from "../services/userService";
 
 export default function PaseLista() {
   const [asistencia, setAsistencia] = useState({});
+  const [error, setError] = useState("");
+  const [tallerId, setTallerId] = useState(null);
+  const [alumnos, setAlumnos] = useState([]);
+
+  useEffect(() => {
+    const fetchAttendanceList = async () => {
+      try {
+        // Assuming tallerId is passed through props or state
+        if (!tallerId) return;
+
+        const response = await servicioAsistencia.obtenerListaAsistencia(tallerId);
+        setAlumnos(response.data);
+      } catch (err) {
+        setError(err.response?.data?.error || "Error al cargar la lista de asistencia");
+      }
+    };
+
+    fetchAttendanceList();
+  }, [tallerId]);
 
   const toggleAsistencia = (matricula, estado) => {
     setAsistencia({ ...asistencia, [matricula]: estado });
+  };
+
+  const handleSubmitAttendance = async () => {
+    try {
+      await servicioAsistencia.enviarAsistencia({
+        taller_id: tallerId,
+        asistencias: Object.entries(asistencia).map(([matricula, estado]) => ({
+          matricula,
+          estado
+        }))
+      });
+      setError("");
+    } catch (err) {
+      setError(err.response?.data?.error || "Error al subir la asistencia");
+    }
   };
 
   return (
@@ -15,6 +50,8 @@ export default function PaseLista() {
         <FaArrowLeft size={24} className="cursor-pointer" />
         <h1 className="text-success">GYMUTTEC</h1>
       </header>
+      
+      {error && <div className="alert alert-danger">{error}</div>}
       
       <div className="card p-4 shadow-lg">
         <h2 className="text-start text-success mb-3">Pase de lista</h2>
@@ -55,7 +92,12 @@ export default function PaseLista() {
           </tbody>
         </table>
 
-        <button className="btn btn-success w-100 mt-3">Subir</button>
+        <button 
+          className="btn btn-success w-100 mt-3"
+          onClick={handleSubmitAttendance}
+        >
+          Subir
+        </button>
       </div>
     </div>
   );

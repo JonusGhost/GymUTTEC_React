@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Para la redirección
 import "bootstrap/dist/css/bootstrap.min.css";
+import { servicioTaller } from "../services/userService";
 
 export default function HomePage() {
   const [talleres, setTalleres] = useState([]);
 
   useEffect(() => {
-    // Obtener talleres desde la API
-    fetch("http://localhost:8000/api/talleres")
-      .then((response) => response.json())
-      .then((data) => setTalleres(data))
-      .catch((error) => console.error("Error cargando talleres:", error));
+    // Obtener talleres usando el servicio de Axios
+    const cargarTalleres = async () => {
+      try {
+        const response = await servicioTaller.obtenerTalleres();
+        setTalleres(response.data);
+      } catch (error) {
+        console.error("Error cargando talleres:", error);
+      }
+    };
+    cargarTalleres();
   }, []);
 
   return (

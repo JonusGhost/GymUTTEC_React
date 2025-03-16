@@ -1,18 +1,68 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
-
-import { FaCog } from "react-icons/fa"; // Ícono de configuración
+import { useState, useEffect } from "react";
+import { FaCog } from "react-icons/fa";
+import { servicioDocente } from "../services/userService";
 
 export default function InformacionDocente() {
   const [numeroEmpleado, setNumeroEmpleado] = useState("");
   const [especialidad, setEspecialidad] = useState("");
-  
   const [afiliacionSeguro, setAfiliacionSeguro] = useState("SI");
   const [celular, setCelular] = useState("");
   const [correoLaboral, setCorreoLaboral] = useState("");
   const [tallerAsignado, setTallerAsignado] = useState("");
+  const [error, setError] = useState("");
+  const [teacherData, setTeacherData] = useState(null);
 
-  
+  useEffect(() => {
+    const fetchTeacherData = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.idUsuario) {
+          setError("Usuario no autenticado");
+          return;
+        }
+
+        const response = await servicioDocente.obtenerPerfilDocente(user.idUsuario);
+        const data = response.data;
+        setTeacherData(data);
+        setNumeroEmpleado(data.numero_empleado || "");
+        setEspecialidad(data.especialidad || "");
+        setAfiliacionSeguro(data.afiliacion_seguro || "SI");
+        setCelular(data.celular || "");
+        setCorreoLaboral(data.correo_laboral || "");
+
+        // Obtener talleres asignados
+        const talleresResponse = await servicioDocente.obtenerTalleresAsignados(user.idUsuario);
+        setTallerAsignado(talleresResponse.data[0]?.nombre || "");
+      } catch (err) {
+        setError(err.response?.data?.error || "Error al cargar datos del docente");
+      }
+    };
+
+    fetchTeacherData();
+  }, []);
+
+  const handleUpdateProfile = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user || !user.idUsuario) {
+        setError("Usuario no autenticado");
+        return;
+      }
+
+      await servicioDocente.actualizarPerfilDocente(user.idUsuario, {
+        numero_empleado: numeroEmpleado,
+        especialidad,
+        afiliacion_seguro: afiliacionSeguro,
+        celular,
+        correo_laboral: correoLaboral
+      });
+
+      setError("");
+    } catch (err) {
+      setError(err.response?.data?.error || "Error al actualizar perfil");
+    }
+  };
 
   return (
     <div className="container-fluid p-0">

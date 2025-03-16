@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaUser, FaLock } from "react-icons/fa";
+import { servicioAutenticacion } from "../services/userService";
 
 export default function LoginPage() {
   const [matricula, setMatricula] = useState("");
@@ -12,19 +13,8 @@ export default function LoginPage() {
   const handleLogin = async () => {
     setError("");
     try {
-      const response = await fetch("http://localhost:8000/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ matricula, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || data.error) {
-        throw new Error(data.error || "Error al iniciar sesión");
-      }
+      const response = await servicioAutenticacion.iniciarSesion({ matricula, password });
+      const data = response.data;
 
       // Guardar token y usuario en localStorage
       localStorage.setItem("token", data.token);
@@ -46,7 +36,7 @@ export default function LoginPage() {
           break;
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || "Error al iniciar sesión");
     }
   };
 

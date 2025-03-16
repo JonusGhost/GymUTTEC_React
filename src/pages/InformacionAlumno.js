@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
-import { FaArrowLeft } from "react-icons/fa"; // Flecha para regresar
+import { useState, useEffect } from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { servicioEstudiante } from "../services/userService";
 
 export default function InformacionAlumno() {
   const [grupo, setGrupo] = useState("");
@@ -8,6 +9,55 @@ export default function InformacionAlumno() {
   const [afiliacionSeguro, setAfiliacionSeguro] = useState("SI");
   const [celular, setCelular] = useState("");
   const [correo, setCorreo] = useState("");
+  const [error, setError] = useState("");
+  const [studentData, setStudentData] = useState(null);
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.idUsuario) {
+          setError("Usuario no autenticado");
+          return;
+        }
+
+        const response = await servicioEstudiante.obtenerPerfilEstudiante(user.idUsuario);
+        const data = response.data;
+        setStudentData(data);
+        setGrupo(data.grupo || "");
+        setSituacionAcademica(data.situacion_academica || "Regular");
+        setAfiliacionSeguro(data.afiliacion_seguro || "SI");
+        setCelular(data.celular || "");
+        setCorreo(data.correo || "");
+      } catch (err) {
+        setError(err.response?.data?.error || "Error al cargar datos del estudiante");
+      }
+    };
+
+    fetchStudentData();
+  }, []);
+
+  const handleUpdateProfile = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user || !user.idUsuario) {
+        setError("Usuario no autenticado");
+        return;
+      }
+
+      await servicioEstudiante.actualizarPerfilEstudiante(user.idUsuario, {
+        grupo,
+        situacion_academica: situacionAcademica,
+        afiliacion_seguro: afiliacionSeguro,
+        celular,
+        correo
+      });
+
+      setError("");
+    } catch (err) {
+      setError(err.response?.data?.error || "Error al actualizar perfil");
+    }
+  };
 
   return (
     <div className="container-fluid p-0">
