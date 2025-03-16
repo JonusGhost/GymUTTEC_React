@@ -4,30 +4,26 @@ import api from './api';
 export const servicioEstudiante = {
     obtenerTalleresInscritos: (matricula) => api.get(`/inscripcion/estudiante/${matricula}`),
     obtenerDetallesTaller: (id) => api.get(`/taller/${id}`),
-    inscribirTaller: (datos) => api.post('/inscripcion', datos),
+    inscribirTaller: (datos) => api.post('/estudiante/inscripcion', datos),
     obtenerPerfilEstudiante: (matricula) => api.get(`/estudiante/${matricula}`),
-    actualizarPerfilEstudiante: (matricula, datos) => api.put(`/estudiante/${matricula}`, datos),
-    cancelarInscripcion: (inscripcionId) => api.delete(`/inscripcion/${inscripcionId}`),
-    obtenerHorarios: (tallerId) => api.get(`/taller/${tallerId}/horarios`),
-    obtenerAsistencias: (matricula) => api.get(`/estudiante/${matricula}/asistencias`)
+    actualizarPerfilEstudiante: (datos) => api.post('/estudiante/guardar', datos),
+    cancelarInscripcion: (datos) => api.post('/estudiante/anular', datos),
+    obtenerActividades: (matricula) => api.get(`/estudiante/${matricula}/actividades`)
 };
 
 // Servicios para docentes
 export const servicioDocente = {
-    obtenerPerfilDocente: (id) => api.get(`/docente/${id}`),
-    actualizarPerfilDocente: (id, datos) => api.put(`/docente/${id}`, datos),
-    obtenerTalleresAsignados: (id) => api.get(`/docente/${id}/talleres`),
-    obtenerAlumnosInscritos: (tallerId) => api.get(`/taller/${tallerId}/alumnos`),
-    registrarAsistencia: (datos) => api.post('/asistencia/registrar', datos),
-    obtenerHistorialAsistencia: (tallerId) => api.get(`/taller/${tallerId}/historial-asistencia`)
+    obtenerPerfilDocente: (matricula) => api.get(`/docente/${matricula}`),
+    actualizarPerfilDocente: (datos) => api.post('/docente/guardar', datos),
+    obtenerTodosDocentes: () => api.get('/docentes'),
+    eliminarDocente: (matricula) => api.delete(`/docente/eliminar/${matricula}`)
 };
 
 // Servicios para asistencia
 export const servicioAsistencia = {
-    obtenerListaAsistencia: (tallerId) => api.get(`/taller/${tallerId}/asistencia`),
-    enviarAsistencia: (datos) => api.post('/asistencia', datos),
-    obtenerReporteAsistencia: (tallerId, fecha) => api.get(`/taller/${tallerId}/asistencia/${fecha}`),
-    modificarAsistencia: (asistenciaId, datos) => api.put(`/asistencia/${asistenciaId}`, datos)
+    obtenerTodasAsistencias: () => api.get('/asistencias'),
+    obtenerListaAsistencia: (tallerId) => api.get(`/asistencias/${tallerId}`),
+    pasarLista: (datos) => api.post('/asistencias/pasar-lista', datos)
 };
 
 // Servicios para autenticación
@@ -39,22 +35,27 @@ export const servicioAutenticacion = {
 // Servicios para talleres
 export const servicioTaller = {
     obtenerTalleres: () => api.get('/talleres'),
-    obtenerTaller: (id) => api.get(`/talleres/${id}`),
-    crearTaller: (datos) => api.post('/talleres', datos),
-    actualizarTaller: (id, datos) => api.put(`/talleres/${id}`, datos),
-    eliminarTaller: (id) => api.delete(`/talleres/${id}`),
-    obtenerHorariosTaller: (id) => api.get(`/talleres/${id}/horarios`),
-    actualizarHorarios: (id, datos) => api.put(`/talleres/${id}/horarios`, datos),
-    obtenerEstadisticas: (id) => api.get(`/talleres/${id}/estadisticas`),
-    buscarTalleres: (filtros) => api.get('/talleres/buscar', { params: filtros })
+    obtenerTaller: (id) => api.get(`/taller/${id}`),
+    crearTaller: (datos) => api.post('/taller/guardar', datos),
+    eliminarTaller: (id) => api.delete(`/taller/eliminar/${id}`)
+};
+
+// Servicios para gimnasios
+export const servicioGimnasio = {
+    obtenerGimnasios: () => api.get('/gimnasios'),
+    obtenerGimnasio: (id) => api.get(`/gimnasio/${id}`),
+    crearGimnasio: (datos) => api.post('/gimnasio/guardar', datos),
+    eliminarGimnasio: (id) => api.delete(`/gimnasio/eliminar/${id}`)
 };
 
 // Servicios para administración
 export const servicioAdmin = {
-    obtenerUsuarios: () => api.get('/usuarios'),
-    crearUsuario: (datos) => api.post('/usuarios', datos),
-    actualizarUsuario: (id, datos) => api.put(`/usuarios/${id}`, datos),
-    eliminarUsuario: (id) => api.delete(`/usuarios/${id}`),
-    obtenerEstadisticasGenerales: () => api.get('/estadisticas'),
-    generarReportes: (filtros) => api.get('/reportes', { params: filtros })
+    obtenerAdministradores: () => api.get('/administradores'),
+    crearAdministrador: (datos) => api.post('/administrador/guardar', datos),
+    eliminarAdministrador: (matricula) => api.delete(`/administrador/eliminar/${matricula}`),
+    obtenerAdministrador: (matricula) => api.get(`/administrador/${matricula}`),
+    asignarDocenteTaller: (matricula, tallerId) => api.post(`/administrador/talleres/asignar-docente/${matricula}/${tallerId}`),
+    bajaDocenteTaller: (datos) => api.post('/administrador/talleres/baja-docente', datos),
+    asignarDocenteGimnasio: (datos) => api.post('/administrador/gimnasio/asignar-docente', datos),
+    bajaDocenteGimnasio: (datos) => api.post('/administrador/gimnasio/baja-docente', datos)
 };
