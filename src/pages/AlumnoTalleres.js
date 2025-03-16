@@ -22,24 +22,20 @@ export default function AlumnoTalleres() {
         }
 
         const matricula = user.idUsuario;
-
-        // Obtener los talleres en los que está inscrito el alumno
+        
+        // Obtener los talleres inscritos
         const responseInscritos = await servicioEstudiante.obtenerTalleresInscritos(matricula);
-        const dataInscritos = responseInscritos.data;
-
         const talleresInscritosData = await Promise.all(
-          dataInscritos.map(async (inscripcion) => {
+          responseInscritos.data.map(async (inscripcion) => {
             const responseTaller = await servicioEstudiante.obtenerDetallesTaller(inscripcion.taller_id);
             return responseTaller.data;
           })
         );
-
         setTalleresInscritos(talleresInscritosData);
 
-        // Obtener los talleres disponibles para explorar (no inscritos)
+        // Obtener los talleres disponibles
         const responseExplorar = await servicioTaller.obtenerTalleres();
         setTalleresExplorar(responseExplorar.data);
-
       } catch (err) {
         setError(err.response?.data?.error || "Error al cargar los talleres");
       }
@@ -59,12 +55,10 @@ export default function AlumnoTalleres() {
       <header className="d-flex justify-content-between align-items-center py-4 px-3 bg-success text-white">
         <h1 className="fs-3">GYMUTTEC</h1>
         <div className="d-flex align-items-center">
-          <button className="btn btn-outline-light me-2" onClick={() => navigate("/perfilAlumno")}>
+          <button className="btn btn-outline-light me-2" onClick={() => navigate("/InformacionAlumno")}> {/* Corregido el enlace */}
             <FaUser size={24} />
           </button>
-          <button className="btn btn-danger" onClick={handleLogout}>
-            Cerrar sesión
-          </button>
+          <button className="btn btn-danger" onClick={handleLogout}>Cerrar sesión</button>
         </div>
       </header>
 
@@ -74,9 +68,9 @@ export default function AlumnoTalleres() {
 
         <div className="d-flex overflow-auto">
           {talleresInscritos.length > 0 ? (
-            talleresInscritos.map((taller, index) => (
+            talleresInscritos.map((taller) => (
               <div
-                key={index}
+                key={taller.id}
                 className="card me-3"
                 style={{ width: "200px", border: "none", cursor: "pointer" }}
                 onClick={() => navigate(`/InformacionTaller/${taller.id}`)}
@@ -102,8 +96,8 @@ export default function AlumnoTalleres() {
         <h2 className="text-center mb-4 text-success">Talleres por explorar</h2>
         <div className="row g-4">
           {talleresExplorar.length > 0 ? (
-            talleresExplorar.map((taller, index) => (
-              <div key={index} className="col-md-6">
+            talleresExplorar.map((taller) => (
+              <div key={taller.id} className="col-md-6">
                 <div
                   className="d-flex bg-white p-3 rounded shadow-sm"
                   style={{ cursor: "pointer" }}
