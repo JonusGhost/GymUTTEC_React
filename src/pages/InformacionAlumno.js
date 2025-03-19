@@ -67,29 +67,34 @@ export default function InformacionAlumno() {
             <section className="container py-5">
                 <h2 className="text-center mb-4 text-success">Información del Alumno</h2>
                 {error && <div className="alert alert-danger">{error}</div>}
-
                 {alumno ? (
                     <form className="card p-4 shadow-sm" onSubmit={handleUpdate}>
-                        <h3 className="text-success">{alumno.nombre} {alumno.apellido_pat}</h3>
+                        <h3 className="text-success">{alumno.nombre} {alumno.apellido_pat} {alumno.apellido_mat}</h3>
+                        <p className="text-muted">Si su nombre es incorrecto, envíe un correo a soporte@universidad.edu</p>
+                        
+                        <div className="mb-3">
+                            <label className="form-label">Matrícula</label>
+                            <input type="text" className="form-control" value={alumno.matricula} disabled />
+                        </div>
                         <div className="mb-3">
                             <label className="form-label">Correo</label>
-                            <input 
-                                type="email"
-                                className="form-control"
-                                name="correo"
-                                value={formulario.correo || ""}
-                                onChange={handleChange}
-                            />
+                            <input type="email" className="form-control" name="correo" value={formulario.correo || ""} onChange={handleChange} disabled />
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Carrera</label>
-                            <input 
-                                type="text"
-                                className="form-control"
-                                name="carrera"
-                                value={formulario.carrera || ""}
-                                onChange={handleChange}
-                            />
+                            <input type="text" className="form-control" value={alumno.carrera} disabled />
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Teléfono</label>
+                            <input type="text" className="form-control" name="telefono" value={formulario.telefono || ""} onChange={handleChange} disabled />
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Dirección</label>
+                            <input type="text" className="form-control" name="direccion" value={formulario.direccion || ""} onChange={handleChange} disabled />
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Contraseña</label>
+                            <input type="password" className="form-control" name="password" value={formulario.password || ""} onChange={handleChange} />
                         </div>
                         <button type="submit" className="btn btn-success w-100">Actualizar Información</button>
                     </form>
