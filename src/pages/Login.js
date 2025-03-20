@@ -29,7 +29,7 @@ export default function LoginPage() {
           navigate("/admin");
           break;
         case "D":
-          navigate("/docente");
+          navigate("/DocenteTaller");
           break;
         default:
           navigate("/");

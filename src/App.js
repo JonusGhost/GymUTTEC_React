@@ -5,6 +5,7 @@ import Principal from "./pages/Principal";
 import AlumnoTalleres from "./pages/AlumnoTalleres";
 import InformacionAlumno from "./pages/InformacionAlumno"
 import InformacionTaller from "./pages/InformacionTaller"; // Import InformacionTaller
+import DocenteTaller from "./pages/DocenteTaller";
 import Login from "./pages/Login"; // Importar el componente Login
 
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/AlumnoTalleres" element={<AlumnoTalleres />} /> 
         <Route path="/InformacionAlumno" element={<InformacionAlumno />} />
         <Route path="/InformacionTaller/:id" element={<InformacionTaller/>}/>
+        <Route path="/docenteTaller" element={<DocenteTaller/>}/>
         <Route path="/login" element={<Login />} /> {/* Ruta para Login */}
       </Routes>
     </Router>

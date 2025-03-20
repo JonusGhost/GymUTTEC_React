@@ -24,6 +24,12 @@ export const servicioAutenticacion = {
     cerrarSesion: () => api.post('/logout')
 };
 
+export const obtenerTallerPorDocente = async (matricula) => {
+    const { data: docente } = await api.get(`/docente/${matricula}`);
+    return await api.get(`/talleres/${docente.emp_docente}`);
+};
+
+
 export const servicioTaller = {
     obtenerTalleres: () => api.get('/talleres'),
     obtenerTaller: (id) => api.get(`/talleres/${id}`),
@@ -32,3 +38,4 @@ export const servicioTaller = {
     eliminarTaller: (id) => api.delete(`/talleres/${id}`)
 };
 export default api;
+
