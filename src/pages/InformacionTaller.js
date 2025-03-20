@@ -9,6 +9,7 @@ export default function InformacionTaller() {
   const navigate = useNavigate();
   const [taller, setTaller] = useState(null);
   const [horarios, setHorarios] = useState([]);
+  const [docente, setDocente] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -19,6 +20,11 @@ export default function InformacionTaller() {
 
         const responseHorarios = await servicioTaller.obtenerHorariosTaller(id);
         setHorarios(responseHorarios.data);
+
+        if (responseTaller.data.docente_matricula) {
+          const responseDocente = await servicioTaller.obtenerDocente(responseTaller.data.docente_matricula);
+          setDocente(responseDocente.data);
+        }
       } catch (err) {
         setError(err.response?.data?.error || "Error al cargar la información del taller");
       }
@@ -45,56 +51,41 @@ export default function InformacionTaller() {
         <div className="row">
           <div className="col-md-4">
             <img
-              src={taller.imagen || "https://media.gettyimages.com/id/1433136825/es/foto/una-mujer-est%C3%A1-haciendo-ejercicios-con-una-cuerda-en-el-gimnasio.jpg?s=612x612&w=0&k=20&c=Y1fkof0pxH9HlKafpQtYRb67rkeO4lz6vK1472RW_mw="}
+              src={taller.imagen || "https://via.placeholder.com/300"}
               alt={taller.nombre}
               className="img-fluid rounded"
-              style={{ borderRadius: "10px" }}
             />
           </div>
 
           <div className="col-md-8">
             <h2 className="text-success">{taller.nombre}</h2>
-            <p>{taller.descripcion}</p>
+            <p><strong>Descripción:</strong> {taller.descripcion}</p>
+            <p><strong>Cupo:</strong> {taller.num_alumnos} alumnos</p>
+            <p><strong>Enlace de Grupo:</strong> <a href={taller.enlace_grupo} target="_blank" rel="noopener noreferrer">Acceder</a></p>
             {error && <div className="alert alert-danger">{error}</div>}
-            <div className="mb-4">
-              <label className="form-label">Enlace de Grupo:</label>
-              <input 
-                type="url" 
-                className="form-control" 
-                placeholder="Introduce el enlace del grupo" 
-                value={taller.enlace_grupo || ""}
-                readOnly
-              />
-            </div>
           </div>
         </div>
-        
-        <div className="row mt-5">
-          <div className="col-md-6">
-            <div className="border p-3 rounded shadow-sm">
-              <h4>Calendario</h4>
-              <div className="p-3" style={{ border: "1px solid #ccc" }}>
-                <p>Calendario de disponibilidad del taller</p>
-              </div>
-            </div>
-          </div>
 
+        {docente && (
+          <div className="mt-4 border p-3 rounded shadow-sm">
+            <h4>Docente Responsable</h4>
+            <p><strong>Nombre:</strong> {docente.nombre} {docente.apellido_pat} {docente.apellido_mat}</p>
+            <p><strong>Especialidad:</strong> {docente.especialidad}</p>
+            <p><strong>Contacto:</strong> {docente.num_celular}</p>
+          </div>
+        )}
+
+        <div className="row mt-4">
           <div className="col-md-6">
             <div className="border p-3 rounded shadow-sm">
-              <h4>Horarios</h4>
-              <div className="mb-3">
-                {horarios.map((horario, index) => (
-                  <div key={index}>
-                    <div className="form-check">
-                      <input type="checkbox" className="form-check-input" id={`horario${index}`} />
-                      <label className="form-check-label" htmlFor={`horario${index}`}>
-                        {horario.dia} {horario.hora_inicio} - {horario.hora_fin}
-                      </label>
-                    </div>
-                    {index < horarios.length - 1 && <hr />}
-                  </div>
-                ))}
-              </div>
+              <h4>Horarios Disponibles</h4>
+              {horarios.length > 0 ? (
+                horarios.map((horario, index) => (
+                  <p key={index}>{horario.dia}: {horario.hora_inicio} - {horario.hora_fin}</p>
+                ))
+              ) : (
+                <p>No hay horarios disponibles.</p>
+              )}
             </div>
           </div>
         </div>
@@ -106,4 +97,3 @@ export default function InformacionTaller() {
     </div>
   );
 }
-
