@@ -23,7 +23,7 @@ export default function HomePage() {
     <div className="container-fluid p-0">
       {/* Título del Gimnasio */}
       <header className="text-center py-4 bg-success text-white position-relative">
-        <h1 className="display-4">Gimnasio UTT</h1>
+        <h1 className="display-4">GymUTTEC</h1>
 
         {/* Botón de Iniciar sesión */}
         <Link 

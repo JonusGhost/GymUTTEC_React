@@ -4,7 +4,8 @@ import api from './api';
 export const servicioEstudiante = {
     obtenerTalleresInscritos: (matricula) => api.get(`/inscripcion/estudiante/${matricula}`),
     obtenerDetallesTaller: (id) => api.get(`/taller/${id}`),
-    inscribirTaller: (datos) => api.post('/estudiante/inscripcion', datos),
+    verificarInscripcion: (datos) => api.get('estudiante/taller' ,datos),
+    inscribirTaller: (datos) => api.post('estudiante/inscripcion', datos),
     obtenerPerfilEstudiante: (matricula) => api.get(`/estudiante/${matricula}`),
     actualizarPerfilEstudiante: (datos) => api.post('/estudiante/guardar', datos),
     cancelarInscripcion: (datos) => api.post('/estudiante/anular', datos),
@@ -37,7 +38,8 @@ export const servicioTaller = {
     obtenerTalleres: () => api.get('/talleres'),
     obtenerTaller: (id) => api.get(`/taller/${id}`),
     crearTaller: (datos) => api.post('/taller/guardar', datos),
-    eliminarTaller: (id) => api.delete(`/taller/eliminar/${id}`)
+    eliminarTaller: (id) => api.delete(`/taller/eliminar/${id}`),
+    obtenerHorariosTaller: (id) => api.get(`talleres/horario/${id}`)
 };
 
 // Servicios para gimnasios

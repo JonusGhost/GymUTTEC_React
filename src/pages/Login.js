@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaUser, FaLock } from "react-icons/fa";
 import { servicioAutenticacion } from "../services/userService";
+import Swal from 'sweetalert2';
 
 export default function LoginPage() {
   const [matricula, setMatricula] = useState("");
@@ -32,7 +33,15 @@ export default function LoginPage() {
           navigate("/DocenteTaller");
           break;
         default:
-          navigate("/");
+          Swal.fire({
+            title: '¡Datos incorrectos!',
+            text: 'Usuario o contraseña incorrectos.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar',
+            background: '#fff', // Color de fondo
+            iconColor: '#721c24', // Color del icono
+            confirmButtonColor: '#155724', // Color del botón
+          });
           break;
       }
     } catch (err) {
@@ -74,8 +83,11 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button className="btn btn-success w-100 fs-5 py-2" onClick={handleLogin}>
+          <button className="btn btn-success w-25 fs-5 py-2 me-3" onClick={handleLogin}>
             Iniciar Sesión
+          </button>
+          <button className="btn btn-outline-light w-25 fs-5 py-2" onClick={() => navigate('/')}>
+            Regresar
           </button>
         </div>
       </div>
