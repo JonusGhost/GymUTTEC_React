@@ -4,6 +4,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FaUser } from "react-icons/fa";
 import { servicioEstudiante } from "../services/userService";
 import { servicioTaller } from "../services/api";
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
 export default function AlumnoTalleres() {
   const navigate = useNavigate();
@@ -52,15 +55,21 @@ export default function AlumnoTalleres() {
 
   return (
     <div className="container-fluid p-0">
-      <header className="d-flex justify-content-between align-items-center py-4 px-3 bg-success text-white">
-        <h1 className="fs-3">GYMUTTEC</h1>
-        <div className="d-flex align-items-center">
-          <button className="btn btn-outline-light me-2" onClick={() => navigate("/InformacionAlumno")}> {/* Corregido el enlace */}
-            <FaUser size={24} />
-          </button>
-          <button className="btn btn-danger" onClick={handleLogout}>Cerrar sesión</button>
-        </div>
-      </header>
+      
+      <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: "#0e9443" }}>
+          <Container>
+              <Navbar.Brand className="text-white">GYMUTTEC</Navbar.Brand>
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" className="text-white"/>
+              <Navbar.Collapse id="responsive-navbar-nav">
+                  <Nav className="me-auto">
+                  <Nav.Link href="/InformacionAlumno" className="text-white">Datos</Nav.Link>
+                  </Nav>
+                  <Nav>
+                      <Nav.Link onClick={handleLogout} className="btn btn-danger btn-sm text-white">Cerrar sesión</Nav.Link>
+                  </Nav>
+              </Navbar.Collapse>
+          </Container>
+      </Navbar>
 
       <section className="container py-5">
         <h2 className="text-center mb-4 text-success">Talleres donde estás inscrito</h2>

@@ -27,7 +27,7 @@ export default function LoginPage() {
           navigate(`/AlumnoTalleres`);
           break;
         case "A":
-          navigate("/admin");
+          navigate("/InformacionAdmin");
           break;
         case "D":
           navigate("/DocenteTaller");
@@ -38,9 +38,9 @@ export default function LoginPage() {
             text: 'Usuario o contraseña incorrectos.',
             icon: 'warning',
             confirmButtonText: 'Aceptar',
-            background: '#fff', // Color de fondo
-            iconColor: '#721c24', // Color del icono
-            confirmButtonColor: '#155724', // Color del botón
+            background: '#fff', 
+            iconColor: '#721c24', 
+            confirmButtonColor: '#155724', 
           });
           break;
       }

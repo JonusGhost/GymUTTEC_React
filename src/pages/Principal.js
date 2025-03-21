@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Para la redirección
 import "bootstrap/dist/css/bootstrap.min.css";
 import { servicioTaller } from "../services/userService";
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
 export default function HomePage() {
   const [talleres, setTalleres] = useState([]);
@@ -22,17 +25,20 @@ export default function HomePage() {
   return (
     <div className="container-fluid p-0">
       {/* Título del Gimnasio */}
-      <header className="text-center py-4 bg-success text-white position-relative">
-        <h1 className="display-4">GymUTTEC</h1>
-
-        {/* Botón de Iniciar sesión */}
-        <Link 
-          to="/login" // Redirige a la página de Login
-          className="btn btn-light position-absolute top-0 end-0 m-3"
-        >
-          Iniciar sesión
-        </Link>
-      </header>
+      <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: "#0e9443" }}>
+          <Container>
+              <Navbar.Brand className="text-white">GYMUTTEC</Navbar.Brand>
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" className="text-white"/>
+              <Navbar.Collapse id="responsive-navbar-nav">
+                  <Nav className="me-auto">
+                    
+                  </Nav>
+                  <Nav>
+                      <Nav.Link className="btn btn-light btn-sm text-succes" href="/login">Iniciar sesión</Nav.Link>
+                  </Nav>
+              </Navbar.Collapse>
+          </Container>
+      </Navbar>
       
       {/* Imagen Principal */}
       <div>
