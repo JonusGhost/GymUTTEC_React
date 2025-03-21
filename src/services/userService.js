@@ -59,5 +59,7 @@ export const servicioAdmin = {
     asignarDocenteTaller: (matricula, tallerId) => api.post(`/administrador/talleres/asignar-docente/${matricula}/${tallerId}`),
     bajaDocenteTaller: (datos) => api.post('/administrador/talleres/baja-docente', datos),
     asignarDocenteGimnasio: (datos) => api.post('/administrador/gimnasio/asignar-docente', datos),
-    bajaDocenteGimnasio: (datos) => api.post('/administrador/gimnasio/baja-docente', datos)
+    bajaDocenteGimnasio: (datos) => api.post('/administrador/gimnasio/baja-docente', datos),
+    obtenerTodosEstudiantes: () => api.get('/estudiantes'),
+    eliminarEstudiante: (matricula) => api.delete(`/estudiante/eliminar/${matricula}`),
 };

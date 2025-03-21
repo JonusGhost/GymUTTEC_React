@@ -12,6 +12,7 @@ import Login from "./pages/Login"; // Importar el componente Login
 import TalleresGestion from "./pages/TalleresGestion";
 import InformacionAdmin from "./pages/InformacionAdmin";
 import GimnasiosGestion from "./pages/GimnasiosGestion";
+import AlumnosGestion from "./pages/AlumnosGestion";
 
 function App() {
   return (
@@ -29,8 +30,9 @@ function App() {
         <Route path="/InformacionAdmin" element={<InformacionAdmin />} /> 
         <Route path="/TalleresGestion" element={<TalleresGestion />} /> 
         <Route path="/GimnasiosGestion" element={<GimnasiosGestion />} /> 
-        { /*<Route path="/AdministradoresGestion" element={<AdministradoresGestion />} /> 
         <Route path="/AlumnosGestion" element={<AlumnosGestion />} /> 
+        { /*
+        <Route path="/AdministradoresGestion" element={<AdministradoresGestion />} /> 
         <Route path="/DocenteGestion" element={<DocenteGestion />} />
         */ } 
       </Routes>

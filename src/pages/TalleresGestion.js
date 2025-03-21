@@ -203,7 +203,7 @@ export default function InformacionAdmin() {
                                 <Nav.Link href="/GimnasiosGestion" className="text-white">Gimnasios</Nav.Link>
                                 <NavDropdown title={<span className="text-white">Usuarios</span>} id="nav-basic-nav-dropdown">
                                     <NavDropdown.Item href="/">Administradores</NavDropdown.Item>
-                                    <NavDropdown.Item href="/">Alumnos</NavDropdown.Item>
+                                    <NavDropdown.Item href="/AlumnosGestion">Alumnos</NavDropdown.Item>
                                     <NavDropdown.Item href="/">Docentes</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link href="/InformacionAdmin" className="text-white">Datos</Nav.Link>
@@ -257,8 +257,8 @@ export default function InformacionAdmin() {
                 </Table>
 
                     </Tab>
-                    <Tab eventKey="registro" title="Registro de Taller">
-                        <h2 className="text-center mb-4 text-success">Registro</h2>
+                    <Tab eventKey="registro" title={idEditando ? "Actualizar Taller" : "Registrar Taller"}>
+                        <h2 className="text-center mb-4 text-success">{idEditando ? "Actualizar Taller" : "Registrar Taller"}</h2>
                         {error && <div className="alert alert-danger">{error}</div>}
                         <form className="card p-4 shadow-sm" onSubmit={handleSubmit}>
                             <div className="mb-3">
