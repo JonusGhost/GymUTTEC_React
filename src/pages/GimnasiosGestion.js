@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { servicioTaller } from "../services/userService";
+import { servicioGimnasio } from "../services/userService";
 import { servicioDocente } from "../services/userService";
 import Swal from 'sweetalert2';
 import Container from 'react-bootstrap/Container';
@@ -15,7 +15,7 @@ import Table from 'react-bootstrap/Table';
 export default function InformacionAdmin() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
-    const [talleresExplorar, setTalleresExplorar] = useState([]);
+    const [GimnasiosExplorar, setGimnasiosExplorar] = useState([]);
     const [docentes, setDocentes] = useState([]);
     const [activeTab, setActiveTab] = useState("listado");
     const [idEditando, setIdEditando] = useState(null);
@@ -37,9 +37,9 @@ export default function InformacionAdmin() {
                     setError("Usuario no autenticado.");
                     return;
                 }
-                const responseTalleres = await servicioTaller.obtenerTalleres();
+                const responseGimnasios = await servicioGimnasio.obtenerGimnasios();
                 const responseDocentes = await servicioDocente.obtenerTodosDocentes(); // Este servicio debe devolverte los docentes
-                setTalleresExplorar(responseTalleres.data);
+                setGimnasiosExplorar(responseGimnasios.data);
                 setDocentes(responseDocentes.data);
             } catch (err) {
                 setError(err.response?.data?.error || "Error al cargar la información del admin");
@@ -100,7 +100,7 @@ export default function InformacionAdmin() {
     const handleDele = async (taller) => {
         try {
             let response;
-            response = await servicioTaller.eliminarTaller(taller.id);
+            response = await servicioGimnasio.eliminarGimnasio(taller.id);
             if (response.error) {
                 throw new Error(response.error);
             }
@@ -113,8 +113,8 @@ export default function InformacionAdmin() {
                 iconColor: '#721c24', 
                 confirmButtonColor: '#155724', 
             });
-            const responseTalleres = await servicioTaller.obtenerTalleres();
-            setTalleresExplorar(responseTalleres.data);
+            const responseGimnasios = await servicioGimnasio.obtenerGimnasios();
+            setGimnasiosExplorar(responseGimnasios.data);
         } catch (err) {
             setError(err.response?.data?.error || "Error al guardar los datos");
         }
@@ -124,11 +124,13 @@ export default function InformacionAdmin() {
         console.log("Editando taller con ID:", taller.id);
         setFormulario({
             id: taller.idEditando,
-            nombre: taller.nombre_tall,
+            nombre: taller.nombre_gim,
             descripcion: taller.descripcion,
             enlaceGrupo: taller.enlace_grupo,
             numeroAlumnos: taller.num_alumnos,
-            docenteId: taller.emp_docente,
+            docenteId_1: taller.emp_docente_1,
+            docenteId_2: taller.emp_docente_2,
+            docenteId_3: taller.emp_docente_3,
             horario: typeof taller.horario === "string" ? JSON.parse(taller.horario) : taller.horario || {},
             imagen: null, 
         });
@@ -142,13 +144,16 @@ export default function InformacionAdmin() {
         e.preventDefault();
         const datosActualizados = {
             id: idEditando,
-            nombre_tall: formulario.nombre,
+            nombre_gim: formulario.nombre,
             descripcion: formulario.descripcion,
             enlace_grupo: formulario.enlaceGrupo,
             num_alumnos: formulario.numeroAlumnos,
             imagen: formulario.imagen,
             horario: JSON.stringify(formulario.horario),
             emp_docente: formulario.docenteId,
+            emp_docente_1: formulario.docenteId_1,
+            emp_docente_2: formulario.docenteId_2,
+            emp_docente_3: formulario.docenteId_3,
         };
 
         console.log(datosActualizados);
@@ -156,9 +161,9 @@ export default function InformacionAdmin() {
         try {
             let response;
             if (idEditando) {
-                response = await servicioTaller.crearTaller(datosActualizados);
+                response = await servicioGimnasio.crearGimnasio(datosActualizados);
             } else {
-                response = await servicioTaller.crearTaller(datosActualizados);
+                response = await servicioGimnasio.crearGimnasio(datosActualizados);
             }
     
             if (response.error) {
@@ -179,8 +184,8 @@ export default function InformacionAdmin() {
     
             limpiarFormulario();
             setIdEditando(null);
-            const responseTalleres = await servicioTaller.obtenerTalleres();
-            setTalleresExplorar(responseTalleres.data);
+            const responseGimnasios = await servicioGimnasio.obtenerGimnasios();
+            setGimnasiosExplorar(responseGimnasios.data);
             setActiveTab("listado");
     
         } catch (err) {
@@ -200,7 +205,7 @@ export default function InformacionAdmin() {
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" className="text-white" />
                         <Navbar.Collapse id="responsive-navbar-nav">
                             <Nav className="me-auto">
-                                <Nav.Link href="/GimnasiosGestion" className="text-white">Gimnasios</Nav.Link>
+                                <Nav.Link href="/TalleresGestion" className="text-white">Talleres</Nav.Link>
                                 <NavDropdown title={<span className="text-white">Usuarios</span>} id="nav-basic-nav-dropdown">
                                     <NavDropdown.Item href="/">Administradores</NavDropdown.Item>
                                     <NavDropdown.Item href="/">Alumnos</NavDropdown.Item>
@@ -217,9 +222,9 @@ export default function InformacionAdmin() {
             </div>
 
             <section className="container py-5">
-                <h2 className="text-center mb-4 text-success">Talleres</h2>
+                <h2 className="text-center mb-4 text-success">Gimnasios</h2>
                 <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} className="mb-3" justify>
-                    <Tab eventKey="listado" title="Lista de Talleres">
+                    <Tab eventKey="listado" title="Lista de Gimnasios">
                     <Table striped bordered hover>
                     <thead>
                         <tr>
@@ -231,11 +236,11 @@ export default function InformacionAdmin() {
                         </tr>
                     </thead>
                     <tbody>
-                        {talleresExplorar.length > 0 ? (
-                            talleresExplorar.map((taller, index) => (
+                        {GimnasiosExplorar.length > 0 ? (
+                            GimnasiosExplorar.map((taller, index) => (
                                 <tr key={taller.id}>
                                     <td>{index + 1}</td>
-                                    <td>{taller.nombre_tall}</td>
+                                    <td>{taller.nombre_gim}</td>
                                     <td>{taller.descripcion}</td>
                                     <td>
                                         <a href={taller.enlace_grupo} target="_blank" rel="noopener noreferrer">
@@ -250,7 +255,7 @@ export default function InformacionAdmin() {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="5" className="text-center">No hay talleres disponibles</td>
+                                <td colSpan="5" className="text-center">No hay Gimnasios disponibles</td>
                             </tr>
                         )}
                     </tbody>
@@ -282,11 +287,43 @@ export default function InformacionAdmin() {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Docente</label>
+                            <label className="form-label">Docentes</label>
                                 <select 
                                     name="docenteId" 
                                     className="form-control" 
-                                    value={formulario.docenteId} 
+                                    value={formulario.docenteId_1} 
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Seleccione un docente</option>
+                                    {docentes.map(docente => (
+                                        <option key={docente.id} value={docente.matricula}>
+                                            {docente.nombre} {docente.apellido_pat}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <select 
+                                    name="docenteId" 
+                                    className="form-control" 
+                                    value={formulario.docenteId_2} 
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Seleccione un docente</option>
+                                    {docentes.map(docente => (
+                                        <option key={docente.id} value={docente.matricula}>
+                                            {docente.nombre} {docente.apellido_pat}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                                
+                            <div className="mb-3">
+                                <select 
+                                    name="docenteId" 
+                                    className="form-control" 
+                                    value={formulario.docenteId_3} 
                                     onChange={handleChange}
                                 >
                                     <option value="">Seleccione un docente</option>

@@ -11,6 +11,7 @@ import Login from "./pages/Login"; // Importar el componente Login
 // Rutas Docente
 import TalleresGestion from "./pages/TalleresGestion";
 import InformacionAdmin from "./pages/InformacionAdmin";
+import GimnasiosGestion from "./pages/GimnasiosGestion";
 
 function App() {
   return (
@@ -25,10 +26,10 @@ function App() {
         <Route path="/login" element={<Login />} /> {/* Ruta para Login */}
 
         {/* Ruta Administradores */}
-        <Route path="/TalleresGestion" element={<TalleresGestion />} /> 
         <Route path="/InformacionAdmin" element={<InformacionAdmin />} /> 
-        { /*<Route path="/GimnasiosGestion" element={<GimnasiosGestion />} /> 
-        <Route path="/AdministradoresGestion" element={<AdministradoresGestion />} /> 
+        <Route path="/TalleresGestion" element={<TalleresGestion />} /> 
+        <Route path="/GimnasiosGestion" element={<GimnasiosGestion />} /> 
+        { /*<Route path="/AdministradoresGestion" element={<AdministradoresGestion />} /> 
         <Route path="/AlumnosGestion" element={<AlumnosGestion />} /> 
         <Route path="/DocenteGestion" element={<DocenteGestion />} />
         */ } 
