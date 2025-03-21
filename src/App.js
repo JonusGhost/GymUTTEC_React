@@ -9,6 +9,8 @@ import DocenteTaller from "./pages/DocenteTaller";
 import Login from "./pages/Login"; // Importar el componente Login
 
 // Rutas Docente
+import DocentesGestion from "./pages/DocentesGestion";
+
 import TalleresGestion from "./pages/TalleresGestion";
 import InformacionAdmin from "./pages/InformacionAdmin";
 import GimnasiosGestion from "./pages/GimnasiosGestion";
@@ -35,6 +37,7 @@ function App() {
         <Route path="/AdministradoresGestion" element={<AdministradoresGestion />} /> 
         <Route path="/DocenteGestion" element={<DocenteGestion />} />
         */ } 
+        <Route path="/DocentesGestion" element={<DocentesGestion />} />
       </Routes>
     </Router>
   );

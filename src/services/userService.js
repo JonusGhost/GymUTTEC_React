@@ -16,6 +16,7 @@ export const servicioEstudiante = {
 export const servicioDocente = {
     obtenerPerfilDocente: (matricula) => api.get(`/docente/${matricula}`),
     actualizarPerfilDocente: (datos) => api.post('/docente/guardar', datos),
+    editarDocente: (matricula, datos) => api.post(`/docentes/${matricula}`, datos),
     obtenerTodosDocentes: () => api.get('/docentes'),
     eliminarDocente: (matricula) => api.delete(`/docente/eliminar/${matricula}`)
 };
