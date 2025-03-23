@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaUser } from "react-icons/fa";
 import { servicioEstudiante } from "../services/userService";
+import { servicioGimnasio } from "../services/userService";
 import { servicioTaller } from "../services/api";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -12,6 +12,7 @@ export default function AlumnoTalleres() {
   const navigate = useNavigate();
   const [talleresInscritos, setTalleresInscritos] = useState([]);
   const [talleresExplorar, setTalleresExplorar] = useState([]);
+  const [GimnasiosExplorar, setGimnasiosExplorar] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -36,9 +37,12 @@ export default function AlumnoTalleres() {
         );
         setTalleresInscritos(talleresInscritosData);
 
-        // Obtener los talleres disponibles
         const responseExplorar = await servicioTaller.obtenerTalleres();
         setTalleresExplorar(responseExplorar.data);
+        
+        const responseExplorarGim = await servicioGimnasio.obtenerGimnasios();
+        setGimnasiosExplorar(responseExplorarGim.data);
+
       } catch (err) {
         setError(err.response?.data?.error || "Error al cargar los talleres");
       }
@@ -72,7 +76,7 @@ export default function AlumnoTalleres() {
       </Navbar>
 
       <section className="container py-5">
-        <h2 className="text-center mb-4 text-success">Talleres donde estás inscrito</h2>
+        <h2 className="text-center mb-4 text-success">Talleres y Gimnasios donde estás inscrito</h2>
         {error && <div className="alert alert-danger">{error}</div>}
 
         <div className="d-flex overflow-auto">
@@ -131,62 +135,32 @@ export default function AlumnoTalleres() {
         </div>
       </section>
 
-      <section className="container py-5">
-        <h2 className="text-center mb-4 text-success">Gimnasios donde estás inscrito</h2>
-        {error && <div className="alert alert-danger">{error}</div>}
-
-        <div className="d-flex overflow-auto">
-          {talleresInscritos.length > 0 ? (
-            talleresInscritos.map((taller) => (
-              <div
-                key={taller.id}
-                className="card me-3"
-                style={{ width: "200px", border: "none", cursor: "pointer" }}
-                onClick={() => navigate(`/InformacionTaller/${taller.id}`)}
-              >
-                <img
-                  src={`http://localhost:8000/storage/${taller.imagen}`}
-                  alt={taller.nombre_tall}
-                  className="card-img-top"
-                  style={{ height: "150px", objectFit: "cover", borderRadius: "50%" }}
-                />
-                <div className="card-body text-center">
-                  <h5 className="card-title text-success">{taller.nombre_tall}</h5>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center">No estás inscrito en ningún taller.</p>
-          )}
-        </div>
-      </section>
-
       <section className="container py-5 bg-light">
-        <h2 className="text-center mb-4 text-success">Talleres por explorar</h2>
+        <h2 className="text-center mb-4 text-success">Gimnasios por explorar</h2>
         <div className="row g-4">
-          {talleresExplorar.length > 0 ? (
-            talleresExplorar.map((taller) => (
-              <div key={taller.id} className="col-md-6">
+          {GimnasiosExplorar.length > 0 ? (
+            GimnasiosExplorar.map((gimnasio) => (
+              <div key={gimnasio.id} className="col-md-6">
                 <div
                   className="d-flex bg-white p-3 rounded shadow-sm"
                   style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/InformacionTaller/${taller.id}`)}
+                  onClick={() => navigate(`/InformacionGimnasio/${gimnasio.id}`)}
                 >
                   <img
-                    src={`http://localhost:8000/storage/${taller.imagen}`}
-                    alt={taller.nombre_tall}
+                    src={`http://localhost:8000/storage/${gimnasio.imagen}`}
+                    alt={gimnasio.nombre_gim}
                     className="rounded me-3"
                     style={{ width: "150px", height: "150px", objectFit: "cover" }}
                   />
                   <div>
-                    <h4 className="text-success">{taller.nombre_tall}</h4>
-                    <p>{taller.descripcion}</p>
+                    <h4 className="text-success">{gimnasio.nombre_gim}</h4>
+                    <p>{gimnasio.descripcion}</p>
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-center">No hay talleres disponibles para explorar.</p>
+            <p className="text-center">No hay gimnasios disponibles para explorar.</p>
           )}
         </div>
       </section>

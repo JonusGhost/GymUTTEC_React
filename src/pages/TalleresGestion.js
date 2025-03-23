@@ -123,7 +123,7 @@ export default function InformacionAdmin() {
     const handleEdit = (taller) => {
         console.log("Editando taller con ID:", taller.id);
         setFormulario({
-            id: taller.idEditando,
+            id: taller.id,
             nombre: taller.nombre_tall,
             descripcion: taller.descripcion,
             enlaceGrupo: taller.enlace_grupo,
@@ -218,7 +218,7 @@ export default function InformacionAdmin() {
 
             <section className="container py-5">
                 <h2 className="text-center mb-4 text-success">Talleres</h2>
-                <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} className="mb-3" justify>
+                <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} onClick={limpiarFormulario} className="mb-3" justify>
                     <Tab eventKey="listado" title="Lista de Talleres">
                     <Table striped bordered hover>
                     <thead>
@@ -257,8 +257,8 @@ export default function InformacionAdmin() {
                 </Table>
 
                     </Tab>
-                    <Tab eventKey="registro" title={idEditando ? "Actualizar Taller" : "Registrar Taller"}>
-                        <h2 className="text-center mb-4 text-success">{idEditando ? "Actualizar Taller" : "Registrar Taller"}</h2>
+                    <Tab eventKey="registro" title={formulario.id ? "Actualizar Taller" : "Registrar Taller"}>
+                        <h2 className="text-center mb-4 text-success">{formulario.id ? "Actualizar Taller" : "Registrar Taller"}</h2>
                         {error && <div className="alert alert-danger">{error}</div>}
                         <form className="card p-4 shadow-sm" onSubmit={handleSubmit}>
                             <div className="mb-3">
@@ -343,8 +343,7 @@ export default function InformacionAdmin() {
                                     </tbody>
                                 </Table>
                             </div>
-                            <button type="submit" className="btn btn-success w-100">
-                                {idEditando ? "Actualizar Taller" : "Registrar Taller"}
+                            <button type="submit" className="btn btn-success w-100">{formulario.id ? "Actualizar Taller" : "Registrar Taller"}
                             </button>
                         </form>
                     </Tab>

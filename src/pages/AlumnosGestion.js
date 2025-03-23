@@ -301,7 +301,7 @@ export default function InformacionEstudiante() {
                                 <label className="form-label">{formulario.id ? "Contraseña (opcional)" : "Contraseña"}</label>
                                 <input type="password" className="form-control" name="password" value={formulario.password} onChange={handleChange} placeholder={formulario.id ? "Nueva contraseña" : "Contraseña"} />
                             </div>
-                            <button type="submit" className="btn btn-success btn-block">{idEditando ? "Actualizar" : "Registrar"}</button>
+                            <button type="submit" className="btn btn-success btn-block">{formulario.id ? "Actualizar" : "Registrar"}</button>
                         </form>
                     </Tab>
                 </Tabs>

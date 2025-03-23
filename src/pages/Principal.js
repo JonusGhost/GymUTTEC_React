@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom"; // Para la redirección
 import "bootstrap/dist/css/bootstrap.min.css";
 import { servicioGimnasio, servicioTaller } from "../services/userService";
 import Container from 'react-bootstrap/Container';
@@ -99,12 +98,12 @@ export default function HomePage() {
                 <div className="d-flex bg-light p-3 rounded shadow-sm">
                   <img 
                     src={gimnasio.imagen} 
-                    alt={gimnasio.nombre_tall} 
+                    alt={gimnasio.nombre_gim} 
                     className="rounded me-3" 
                     style={{ width: "100px", height: "100px", objectFit: "cover" }} 
                   />
                   <div>
-                    <h4 className="text-success">{gimnasio.nombre_tall}</h4>
+                    <h4 className="text-success">{gimnasio.nombre_gim}</h4>
                     <p>{gimnasio.descripcion}</p>
                   </div>
                 </div>

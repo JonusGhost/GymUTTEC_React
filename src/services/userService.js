@@ -15,8 +15,9 @@ export const servicioEstudiante = {
     
     actualizarPerfilEstudiante: (datos) => api.post('/estudiante/guardar', datos),
     verificarInscripcion: (datos) => api.get('estudiante/taller' ,datos),
-    obtenerTalleresInscritos: (matricula) => api.get(`/inscripcion/estudiante/${matricula}`),
     obtenerPerfilEstudiante: (matricula) => api.get(`/estudiante/${matricula}`),
+    
+    obtenerTalleresInscritos: (matricula) => api.get(`/inscripcion/estudiante/${matricula}`),
 };
 
 // Servicios para docentes

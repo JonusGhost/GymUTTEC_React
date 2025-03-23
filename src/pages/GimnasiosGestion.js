@@ -26,7 +26,9 @@ export default function InformacionAdmin() {
         numeroAlumnos: "",
         imagen: null,
         horario: {},
-        docenteId: "",
+        docenteId_1: "",
+        docenteId_2: "",
+        docenteId_3: "",
     });
 
     useEffect(() => {
@@ -93,7 +95,9 @@ export default function InformacionAdmin() {
             numeroAlumnos: "",
             imagen: null,
             horario: {},
-            docenteId: "",
+            docenteId_1: "",
+            docenteId_2: "",
+            docenteId_3: "",
         });
     };
 
@@ -121,9 +125,8 @@ export default function InformacionAdmin() {
     };
 
     const handleEdit = (taller) => {
-        console.log("Editando taller con ID:", taller.id);
         setFormulario({
-            id: taller.idEditando,
+            id: taller.id,
             nombre: taller.nombre_gim,
             descripcion: taller.descripcion,
             enlaceGrupo: taller.enlace_grupo,
@@ -140,7 +143,6 @@ export default function InformacionAdmin() {
     };    
 
     const handleSubmit = async (e) => {
-        console.log("Editando taller con ID:", idEditando);
         e.preventDefault();
         const datosActualizados = {
             id: idEditando,
@@ -150,7 +152,6 @@ export default function InformacionAdmin() {
             num_alumnos: formulario.numeroAlumnos,
             imagen: formulario.imagen,
             horario: JSON.stringify(formulario.horario),
-            emp_docente: formulario.docenteId,
             emp_docente_1: formulario.docenteId_1,
             emp_docente_2: formulario.docenteId_2,
             emp_docente_3: formulario.docenteId_3,
@@ -223,7 +224,7 @@ export default function InformacionAdmin() {
 
             <section className="container py-5">
                 <h2 className="text-center mb-4 text-success">Gimnasios</h2>
-                <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} className="mb-3" justify>
+                <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} onClick={limpiarFormulario} className="mb-3" justify>
                     <Tab eventKey="listado" title="Lista de Gimnasios">
                     <Table striped bordered hover>
                     <thead>
@@ -262,8 +263,8 @@ export default function InformacionAdmin() {
                 </Table>
 
                     </Tab>
-                    <Tab eventKey="registro" title={idEditando ? "Actualizar Gimnasio" : "Registro de Gimnasio"}>
-                        <h2 className="text-center mb-4 text-success">{idEditando ? "Actualizar Gimnasio" : "Registro de Gimnasio"}</h2>
+                    <Tab eventKey="registro" title={formulario.id ? "Actualizar Gimnasio" : "Registro de Gimnasio"}>
+                        <h2 className="text-center mb-4 text-success">{formulario.id ? "Actualizar Gimnasio" : "Registro de Gimnasio"}</h2>
                         {error && <div className="alert alert-danger">{error}</div>}
                         <form className="card p-4 shadow-sm" onSubmit={handleSubmit}>
                             <div className="mb-3">
@@ -287,32 +288,16 @@ export default function InformacionAdmin() {
                             </div>
 
                             <div className="mb-3">
-                            <label className="form-label">Fitness Coach</label>
+                                <label className="form-label">Fitness Coach 1</label>
                                 <select 
-                                    name="docenteId" 
+                                    name="docenteId_1" 
                                     className="form-control" 
                                     value={formulario.docenteId_1} 
                                     onChange={handleChange}
                                 >
                                     <option value="">Seleccione un Coach</option>
                                     {docentes.map(docente => (
-                                        <option key={docente.id} value={docente.matricula}>
-                                            {docente.nombre} {docente.apellido_pat}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="mb-3">
-                                <select 
-                                    name="docenteId" 
-                                    className="form-control" 
-                                    value={formulario.docenteId_2} 
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Seleccione un Coach</option>
-                                    {docentes.map(docente => (
-                                        <option key={docente.id} value={docente.matricula}>
+                                        <option key={docente.matricula} value={docente.matricula}>
                                             {docente.nombre} {docente.apellido_pat}
                                         </option>
                                     ))}
@@ -320,15 +305,33 @@ export default function InformacionAdmin() {
                             </div>
                                 
                             <div className="mb-3">
+                                <label className="form-label">Fitness Coach 2</label>
                                 <select 
-                                    name="docenteId" 
+                                    name="docenteId_2" 
+                                    className="form-control" 
+                                    value={formulario.docenteId_2} 
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Seleccione un Coach</option>
+                                    {docentes.map(docente => (
+                                        <option key={docente.matricula} value={docente.matricula}>
+                                            {docente.nombre} {docente.apellido_pat}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                                
+                            <div className="mb-3">
+                                <label className="form-label">Fitness Coach 3</label>
+                                <select 
+                                    name="docenteId_3" 
                                     className="form-control" 
                                     value={formulario.docenteId_3} 
                                     onChange={handleChange}
                                 >
                                     <option value="">Seleccione un Coach</option>
                                     {docentes.map(docente => (
-                                        <option key={docente.id} value={docente.matricula}>
+                                        <option key={docente.matricula} value={docente.matricula}>
                                             {docente.nombre} {docente.apellido_pat}
                                         </option>
                                     ))}
@@ -380,8 +383,7 @@ export default function InformacionAdmin() {
                                     </tbody>
                                 </Table>
                             </div>
-                            <button type="submit" className="btn btn-success w-100">
-                                {idEditando ? "Actualizar Taller" : "Registrar Taller"}
+                            <button type="submit" className="btn btn-success w-100">{formulario.id ? "Actualizar Taller" : "Registrar Taller"}
                             </button>
                         </form>
                     </Tab>

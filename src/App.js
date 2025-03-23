@@ -20,6 +20,9 @@ import DocentesGestion from "./pages/DocentesGestion";
 // Rutas Docentes
 import InformacionDocente from "./pages/InformacionDocente";
 
+// Rutas ---
+import InformacionGimnasio from "./pages/InformacionGimnasio";
+
 function App() {
   return (
     <Router>
@@ -28,7 +31,6 @@ function App() {
         <Route path="/AlumnoTalleres" element={<AlumnoTalleres />} /> 
         <Route path="/InformacionAlumno" element={<InformacionAlumno />} />
 
-        <Route path="/InformacionTaller/:id" element={<InformacionTaller/>}/>
         <Route path="/docenteTaller" element={<DocenteTaller/>}/>
         <Route path="/login" element={<Login />} /> {/* Ruta para Login */}
 
@@ -42,6 +44,11 @@ function App() {
         
         {/* Ruta Docentes */}
         <Route path="/InformacionDocente" element={<InformacionDocente/>}></Route>
+        
+        {/* Ruta --- */}
+        <Route path="/InformacionTaller/:id" element={<InformacionTaller/>}/>
+        <Route path="/InformacionGimnasio/:id" element={<InformacionGimnasio/>}></Route>
+
       </Routes>
     </Router>
   );

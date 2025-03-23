@@ -115,7 +115,7 @@ export default function InformacionAdmin() {
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
                             <Nav.Link href="/TalleresGestion" className="text-white">Talleres</Nav.Link>
-                            <Nav.Link href="/" className="text-white">Gimnasios</Nav.Link>
+                            <Nav.Link href="/GimnasiosGestion" className="text-white">Gimnasios</Nav.Link>
                             <NavDropdown title={<span className="text-white">Usuarios</span>} id="nav-basic-nav-dropdown">
                               <NavDropdown.Item href="/AdministradoresGestion">Administradores</NavDropdown.Item>
                               <NavDropdown.Item href="/AlumnosGestion">Alumnos</NavDropdown.Item>
