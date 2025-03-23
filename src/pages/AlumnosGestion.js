@@ -37,8 +37,8 @@ export default function InformacionEstudiante() {
                     setError("Usuario no autenticado.");
                     return;
                 }
-                const responseEstudiantes = await servicioAdmin.obtenerTodosEstudiantes();
-                setEstudiantes(responseEstudiantes.data);
+                const responsetodosestudiantes = await servicioAdmin.obtenerTodosEstudiantes();
+                setEstudiantes(responsetodosestudiantes.data);
             } catch (err) {
                 setError(err.response?.data?.error || "Error al cargar la información del estudiante");
             }
@@ -76,7 +76,7 @@ export default function InformacionEstudiante() {
 
     const handleDele = async (estudiante) => {
         try {
-            let response = await servicioAdmin.eliminarEstudiante(estudiante.id);
+            let response = await servicioAdmin.eliminarEstudiante(estudiante.matricula);
             if (response.error) {
                 throw new Error(response.error);
             }
@@ -89,24 +89,26 @@ export default function InformacionEstudiante() {
                 iconColor: '#721c24',
                 confirmButtonColor: '#155724',
             });
-            const responseEstudiantes = await servicioAdmin.obtenerTodosEstudiantes();
-            setEstudiantes(responseEstudiantes.data);
+            const responsetodosestudiantes = await servicioAdmin.obtenerTodosEstudiantes();
+            setEstudiantes(responsetodosestudiantes.data);
         } catch (err) {
             setError(err.response?.data?.error || "Error al eliminar al estudiante");
         }
     };
 
     const handleEdit = (estudiante) => {
+        console.log(estudiante);
         setFormulario({
-            id: estudiante.id,
-            nombre: estudiante.nombre,
-            apellido_pat: estudiante.apellido_pat,
-            apellido_mat: estudiante.apellido_mat,
-            num_celular: estudiante.num_celular,
-            afili_seguro: estudiante.afili_seguro,
-            grado: estudiante.grado,
-            sit_academica: estudiante.sit_academica,
-            email: estudiante.email,
+            id: estudiante.id || "",
+            matricula: estudiante.matricula || "",
+            nombre: estudiante.nombre || "",
+            apellido_pat: estudiante.apellido_pat || "",
+            apellido_mat: estudiante.apellido_mat || "",
+            num_celular: estudiante.num_celular || "",
+            afili_seguro: estudiante.afili_seguro || "",
+            grado: estudiante.grado || "",
+            sit_academica: estudiante.sit_academica || "",
+            email: estudiante.users?.email || "",
             password: "",
         });
         setIdEditando(estudiante.id);
@@ -116,6 +118,7 @@ export default function InformacionEstudiante() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const datosActualizados = {
+            matricula: formulario.matricula,
             nombre: formulario.nombre,
             apellido_pat: formulario.apellido_pat,
             apellido_mat: formulario.apellido_mat,
@@ -172,8 +175,8 @@ export default function InformacionEstudiante() {
                                 <Nav.Link href="/TalleresGestion" className="text-white">Talleres</Nav.Link>
                                 <Nav.Link href="/GimnasiosGestion" className="text-white">Gimnasios</Nav.Link>
                                 <NavDropdown title={<span className="text-white">Usuarios</span>} id="nav-basic-nav-dropdown">
-                                    <NavDropdown.Item href="/">Administradores</NavDropdown.Item>
-                                    <NavDropdown.Item href="/">Docentes</NavDropdown.Item>
+                                    <NavDropdown.Item href="/AdministradoresGestion">Administradores</NavDropdown.Item>
+                                    <NavDropdown.Item href="/DocentesGestion">Docentes</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link href="/InformacionAdmin" className="text-white">Datos</Nav.Link>
                             </Nav>
@@ -187,7 +190,7 @@ export default function InformacionEstudiante() {
 
             <section className="container py-5">
                 <h2 className="text-center mb-4 text-success">Estudiantes</h2>
-                <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} className="mb-3" justify>
+                <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} onClick={limpiarFormulario} className="mb-3" justify>
                     <Tab eventKey="listado" title="Lista de Estudiantes">
                         <Table striped bordered hover>
                             <thead>
@@ -204,7 +207,7 @@ export default function InformacionEstudiante() {
                                         <tr key={estudiante.id}>
                                             <td>{estudiante.matricula}</td>
                                             <td>{estudiante.nombre} {estudiante.apellido_pat} {estudiante.apellido_mat}</td>
-                                            <td>{estudiante.num_celular}</td>
+                                            <td>{estudiante.users?.email}</td>
                                             <td>
                                                 <button className="btn btn-warning btn-sm mx-1" onClick={() => handleEdit(estudiante)}>Editar</button>
                                                 <button className="btn btn-danger btn-sm mx-1" onClick={() => handleDele(estudiante)}>Eliminar</button>
@@ -219,58 +222,84 @@ export default function InformacionEstudiante() {
                             </tbody>
                         </Table>
                     </Tab>
-                    <Tab eventKey="registro" title={idEditando ? "Actualizar Estudiante" : "Registrar Estudiante"}>
-                        <h2 className="text-center mb-4 text-success">{idEditando ? "Actualizar Estudiante" : "Registrar Estudiante"}</h2>
+                    <Tab eventKey="registro" title={formulario.id ? "Actualizar Estudiante" : "Registrar Estudiante"}>
+                        <h2 className="text-center mb-4 text-success">{formulario.id ? "Actualizar Estudiante" : "Registrar Estudiante"}</h2>
                         {error && <div className="alert alert-danger">{error}</div>}
                         <form className="card p-4 shadow-sm" onSubmit={handleSubmit}>
                             <div className="mb-3">
                                 <label className="form-label">Matrícula</label>
-                                <input type="text" className="form-control" value={formulario.matricula || ""}  disabled/>
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">Nombre</label>
-                                <input type="text" className="form-control" name="nombre" value={formulario.nombre} onChange={handleChange} />
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">Apellido Paterno</label>
-                                <input type="text" className="form-control" name="apellido_pat" value={formulario.apellido_pat} onChange={handleChange} />
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">Apellido Materno</label>
-                                <input type="text" className="form-control" name="apellido_mat" value={formulario.apellido_mat} onChange={handleChange} />
+                                <input type="text" className="form-control" placeholder="Ingrese la matrícula (10 dígitos)" name="matricula" value={formulario.matricula || ""} onChange={(e) => {const value = e.target.value.replace(/\D/g, '').slice(0, 10); setFormulario({...formulario, matricula: value}); }} pattern="\d{10}" maxLength="10" disabled={!!formulario.id} required/>
                             </div>
 
                             <div className="mb-3">
                                 <label className="form-label">Correo</label>
-                                <input type="email" className="form-control" name="email" value={formulario.email} onChange={handleChange} disabled/>
+                                <input type="email" className="form-control" name="email" value={formulario.email || ""} onChange={(e) => setFormulario({...formulario, email: e.target.value})} pattern=".+@uttec\.edu\.mx$" disabled={!!formulario.id} required/>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Nombre</label>
+                                <input type="text" className="form-control" name="nombre" value={formulario.nombre} onChange={handleChange} required />
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Apellido Paterno</label>
+                                <input type="text" className="form-control" name="apellido_pat" value={formulario.apellido_pat} onChange={handleChange} required />
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Apellido Materno</label>
+                                <input type="text" className="form-control" name="apellido_mat" value={formulario.apellido_mat} onChange={handleChange} required />
                             </div>
 
                             <div className="mb-3">
                                 <label className="form-label">Afiliación al Seguro</label>
-                                <input type="text" className="form-control" name="afili_seguro" value={formulario.afili_seguro} onChange={handleChange} />
+                                <div>
+                                    <div className="form-check">
+                                        <input type="radio" className="form-check-input" name="afili_seguro" value="IMSS" checked={formulario.afili_seguro === "IMSS"} onChange={handleChange}required />
+                                        <label className="form-check-label">IMSS</label>
+                                    </div>
+                                    <div className="form-check">
+                                        <input type="radio" className="form-check-input" name="afili_seguro" value="ISSSTE" checked={formulario.afili_seguro === "ISSSTE"} onChange={handleChange}required />
+                                        <label className="form-check-label">ISSSTE</label>
+                                    </div>
+                                    <div className="form-check">
+                                        <input type="radio" className="form-check-input" name="afili_seguro" value="Particular" checked={formulario.afili_seguro === "Particular"} onChange={handleChange}required />
+                                        <label className="form-check-label">Particular</label>
+                                    </div>
+                                    <div className="form-check">
+                                        <input type="radio" className="form-check-input" name="afili_seguro" value="Otro" checked={formulario.afili_seguro === "Otro"} onChange={handleChange}required />
+                                        <label className="form-check-label">Otro</label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="mb-3">
                                 <label className="form-label">Grado</label>
-                                <input type="text" className="form-control" name="grado" value={formulario.grado} onChange={handleChange} />
+                                <input type="text" className="form-control" name="grado" value={formulario.grado} onChange={handleChange} required />
                             </div>
 
                             <div className="mb-3">
                                 <label className="form-label">Situación Académica</label>
-                                <input type="text" className="form-control" name="sit_academica" value={formulario.sit_academica} onChange={handleChange} />
+                                <div>
+                                    <div className="form-check">
+                                        <input type="radio" className="form-check-input" name="sit_academica" value="Regular" checked={formulario.sit_academica === "Regular"} onChange={handleChange}required />
+                                        <label className="form-check-label">Regular</label>
+                                    </div>
+                                    <div className="form-check">
+                                        <input type="radio" className="form-check-input" name="sit_academica" value="Irregular" checked={formulario.sit_academica === "Irregular"} onChange={handleChange}required />
+                                        <label className="form-check-label">Irregular</label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="mb-3">
                                 <label className="form-label">Teléfono</label>
-                                <input type="number" className="form-control" name="num_celular" value={formulario.num_celular} onChange={handleChange} />
+                                <input type="text" className="form-control" name="num_celular" value={formulario.num_celular} onChange={(e) => {const value = e.target.value.replace(/\D/g, '').slice(0,10); setFormulario({...formulario, num_celular: value});}} pattern="\d{10}" maxLength="10" required />
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Contraseña (opcional)</label>
-                                <input type="password" className="form-control" name="password" value={formulario.password} onChange={handleChange} placeholder="Nueva contraseña" />
+                                <label className="form-label">{formulario.id ? "Contraseña (opcional)" : "Contraseña"}</label>
+                                <input type="password" className="form-control" name="password" value={formulario.password} onChange={handleChange} placeholder={formulario.id ? "Nueva contraseña" : "Contraseña"} />
                             </div>
                             <button type="submit" className="btn btn-success btn-block">{idEditando ? "Actualizar" : "Registrar"}</button>
                         </form>

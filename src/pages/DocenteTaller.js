@@ -2,6 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { obtenerTallerPorDocente } from "../services/api";
+import Swal from 'sweetalert2';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import Table from 'react-bootstrap/Table';
 
 export default function DocenteTaller() {
     const [taller, setTaller] = useState(null);
@@ -26,52 +34,33 @@ export default function DocenteTaller() {
         cargarTaller();
     }, [navigate]);
 
-    const cerrarSesion = () => {
+    const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        navigate("/");
+        navigate("/login");
     };
 
     return (
-        <div className="container mt-5">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1 className="text-success">Información del Taller</h1>
-                <button className="btn btn-danger" onClick={cerrarSesion}>
-                    Cerrar Sesión
-                </button>
+        <>
+        <div className="container-fluid p-0">
+                <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: "#0e9443" }}>
+                    <Container>
+                        <Navbar.Brand className="text-white">GYMUTTEC</Navbar.Brand>
+                        <Navbar.Toggle aria-controls="responsive-navbar-nav" className="text-white" />
+                        <Navbar.Collapse id="responsive-navbar-nav">
+                            <Nav className="me-auto">
+                                <Nav.Link href="/TalleresGestion" className="text-white">Talleres</Nav.Link>
+                                <Nav.Link href="/GimnasiosGestion" className="text-white">Gimnasios</Nav.Link>
+                                <Nav.Link href="/InformacionDocente" className="text-white">Datos</Nav.Link>
+                            </Nav>
+                            <Nav>
+                                <Nav.Link onClick={handleLogout} className="btn btn-danger btn-sm text-white">Cerrar sesión</Nav.Link>
+                            </Nav>
+                        </Navbar.Collapse>
+                    </Container>
+                </Navbar>
             </div>
-            {taller ? (
-                <div className="card shadow-lg p-4">
-                    <h2>{taller.nombre_tall}</h2>
-                    <img
-                        src={`/storage/${taller.imagen}`}
-                        alt="Taller"
-                        className="img-fluid mb-3"
-                        style={{ maxHeight: "300px" }}
-                    />
-                    <p>
-                        <strong>Descripción:</strong> {taller.descripcion}
-                    </p>
-                    <p>
-                        <strong>Horario:</strong> {taller.horario}
-                    </p>
-                    <p>
-                        <strong>Enlace Grupo:</strong>{" "}
-                        <a
-                            href={taller.enlace_grupo}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Acceder
-                        </a>
-                    </p>
-                    <button className="btn btn-primary w-100 mt-3">
-                        Pase de Lista
-                    </button>
-                </div>
-            ) : (
-                <p>Cargando información del taller...</p>
-            )}
-        </div>
+
+        </>
     );
 }

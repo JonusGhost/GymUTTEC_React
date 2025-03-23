@@ -30,7 +30,7 @@ export default function LoginPage() {
           navigate("/InformacionAdmin");
           break;
         case "D":
-          navigate("/DocenteTaller");
+          navigate("/InformacionDocente");
           break;
         default:
           Swal.fire({

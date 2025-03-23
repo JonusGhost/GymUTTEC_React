@@ -120,7 +120,7 @@ export default function InformacionAlumno() {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" className="text-white"/>
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                          <Nav.Link href="/AlumnoTalleres" className="text-white">Home</Nav.Link>
+                          <Nav.Link href="/AlumnoTalleres" className="text-white">Talleres</Nav.Link>
                         </Nav>
                         <Nav>
                             <Nav.Link onClick={handleLogout} className="btn btn-danger btn-sm text-white">Cerrar sesión</Nav.Link>

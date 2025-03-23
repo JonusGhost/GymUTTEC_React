@@ -83,8 +83,6 @@ export default function InformacionAdmin() {
                 ...(formulario.password ? { password: formulario.password } : {}),
             };
 
-            console.log(datosActualizados);
-
             await servicioAdmin.obtenerAdministrador(datosActualizados);
             Swal.fire({
                 title: "¡Actualización exitosa!",
@@ -119,9 +117,9 @@ export default function InformacionAdmin() {
                             <Nav.Link href="/TalleresGestion" className="text-white">Talleres</Nav.Link>
                             <Nav.Link href="/" className="text-white">Gimnasios</Nav.Link>
                             <NavDropdown title={<span className="text-white">Usuarios</span>} id="nav-basic-nav-dropdown">
-                              <NavDropdown.Item href="/">Administradores</NavDropdown.Item>
-                              <NavDropdown.Item href="/">Alumnos</NavDropdown.Item>
-                              <NavDropdown.Item href="/">Docentes</NavDropdown.Item>
+                              <NavDropdown.Item href="/AdministradoresGestion">Administradores</NavDropdown.Item>
+                              <NavDropdown.Item href="/AlumnosGestion">Alumnos</NavDropdown.Item>
+                              <NavDropdown.Item href="/DocentesGestion">Docentes</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
                         <Nav>

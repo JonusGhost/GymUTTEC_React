@@ -22,18 +22,19 @@ export default function InformacionTaller() {
       try {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.idUsuario) {
-            setError("Usuario no autenticado.");
-            return;
+          setError("Usuario no autenticado.");
+          return;
         }
         const matricula = user.idUsuario;
         const response = await servicioEstudiante.obtenerPerfilEstudiante(matricula);
         
+        // Verificar inscripción, se espera un valor booleano
         const responseIns = await servicioEstudiante.verificarInscripcion(matricula, id);
-
+        setInscrito(!!responseIns.data);  // Asegurarse de que sea un valor booleano
+        
         const responseTaller = await servicioTaller.obtenerTaller(id);
         const matricula_doc = responseTaller.data.emp_docente;
         
-
         if (matricula_doc) {
           const responseDocente = await servicioDocente.obtenerPerfilDocente(matricula_doc);
           setDocente(responseDocente.data);
@@ -42,16 +43,14 @@ export default function InformacionTaller() {
         }
         
         const responseHorarios = await servicioTaller.obtenerHorariosTaller(id);
-        setInscrito(responseIns.data);
         setAlumno(response.data);
         setHorarios(responseHorarios.data);
         setTaller(responseTaller.data);
-
       } catch (err) {
         setError(err.response?.data?.error || "Error al cargar la información del taller");
       }
     };
-
+  
     if (id) {
       cargarInformacionTaller();
     }
@@ -60,15 +59,15 @@ export default function InformacionTaller() {
   const handleInscrp = async (e) => {
     e.preventDefault();
     try {
-        await servicioEstudiante.inscribirTaller({matricula: alumno.matricula, taller_id: taller.id});
-        setInscrito(true); 
+        await servicioEstudiante.inscribirTaller({ matricula: alumno.matricula, taller_id: taller.id });
+        setInscrito(true);
         Swal.fire({
           title: '¡Inscrito!',
-          text: 'Se a inscrito correctamente.',
+          text: 'Se ha inscrito correctamente.',
           confirmButtonText: 'Aceptar',
-          background: '#fff', 
+          background: '#fff',
           iconColor: '#721c24',
-          confirmButtonColor: '#155724', 
+          confirmButtonColor: '#155724',
         });
     } catch (err) {
         setError(err.response?.data?.error || "Error al actualizar la información del alumno");
@@ -79,7 +78,7 @@ export default function InformacionTaller() {
     e.preventDefault();
     try {
       await servicioEstudiante.cancelarInscripcion({ matricula: alumno.matricula, taller_id: taller.id });
-      setInscrito(false); 
+      setInscrito(false);
       Swal.fire({
         title: '¡Inscripción anulada!',
         text: 'Has anulado tu inscripción con éxito.',
@@ -92,7 +91,6 @@ export default function InformacionTaller() {
       setError(err.response?.data?.error || "Error al anular la inscripción");
     }
   };
-  
 
   if (!taller) {
     return <div className="text-center p-5">Cargando información del taller...</div>;
@@ -100,7 +98,7 @@ export default function InformacionTaller() {
 
   return (
     <div className="container-fluid p-0">
-      <header className="d-flex justify-content-between align-items-center py-4 px-3 bg-success text-white"> 
+      <header className="d-flex justify-content-between align-items-center py-4 px-3 bg-success text-white">
         <FaArrowLeft size={24} className="cursor-pointer" onClick={() => navigate(-1)} />
         <h1 className="fs-4">Información del taller</h1>
         <div></div>
@@ -121,7 +119,7 @@ export default function InformacionTaller() {
             <p><strong>Descripción:</strong> {taller.descripcion}</p>
             <p><strong>Cupo:</strong> {taller.num_alumnos} alumnos</p>
             {inscrito && (
-              <p><strong>Enlace de Grupo:</strong> 
+              <p><strong>Enlace de Grupo:</strong>
                 <a href={taller.enlace_grupo} target="_blank" rel="noopener noreferrer"> Grupo</a>
               </p>
             )}
@@ -132,9 +130,9 @@ export default function InformacionTaller() {
                 <button type="submit" className="btn btn-success w-50 py-3 fs-5">Inscribirse</button>
               )}
             </form>
+
             {error && <div className="alert alert-danger">{error}</div>}
           </div>
-
         </div>
 
         {docente && (
@@ -146,41 +144,41 @@ export default function InformacionTaller() {
           </div>
         )}
 
-<div className="row">
-          <div className="col-md-12">
-            <div className="border p-3 rounded shadow-sm">
-              <h4>Horarios Disponibles</h4>
-              <table className="table table-bordered text-center">
-                <thead className="table-success">
-                  <tr>
-                    <th>Hora</th>
-                    <th>Lunes</th>
-                    <th>Martes</th>
-                    <th>Miércoles</th>
-                    <th>Jueves</th>
-                    <th>Viernes</th>
-                    <th>Sábado</th>
+      <div className="row">
+        <div className="col-md-12">
+          <div className="border p-3 rounded shadow-sm">
+            <h4>Horarios Disponibles</h4>
+            <table className="table table-bordered text-center">
+              <thead className="table-success">
+                <tr>
+                  <th>Hora</th>
+                  <th>Lunes</th>
+                  <th>Martes</th>
+                  <th>Miércoles</th>
+                  <th>Jueves</th>
+                  <th>Viernes</th>
+                  <th>Sábado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"].map((hora, idx) => (
+                  <tr key={idx}>
+                    <td>{hora}</td>
+                    {["lunes", "martes", "miercoles", "jueves", "viernes", "sabado"].map((dia, index) => (
+                      <td key={index} 
+                          style={{
+                            backgroundColor: horarios[dia]?.includes(hora) ? '#28a745' : '#6c757d', 
+                            color: '#fff'
+                          }} 
+                      ></td>
+                    ))}
                   </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(horarios).map(([dia, horas]) => 
-                    horas.map((hora, idx) => (
-                      <tr key={`${dia}-${idx}`}>
-                        <td>{hora}</td>
-                        <td className={dia === 'lunes' ? 'bg-success text-white' : ''}></td>
-                        <td className={dia === 'martes' ? 'bg-success text-white' : ''}></td>
-                        <td className={dia === 'miércoles' ? 'bg-success text-white' : ''}></td>
-                        <td className={dia === 'jueves' ? 'bg-success text-white' : ''}></td>
-                        <td className={dia === 'viernes' ? 'bg-success text-white' : ''}></td>
-                        <td className={dia === 'sábado' ? 'bg-success text-white' : ''}></td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
 
       </section>
     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { servicioDocente, servicioAdmin } from "../services/userService";
+import { servicioAdmin } from "../services/userService";
 import Swal from 'sweetalert2';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -11,10 +11,10 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Table from 'react-bootstrap/Table';
 
-export default function InformacionDocente() {
+export default function InformacionAdmin() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
-    const [docentes, setDocentes] = useState([]);
+    const [administradores, setAdministradores] = useState([]);
     const [activeTab, setActiveTab] = useState("listado");
     const [idEditando, setIdEditando] = useState(null);
     const [formulario, setFormulario] = useState({
@@ -24,25 +24,24 @@ export default function InformacionDocente() {
         afili_seguro: "",
         num_celular: "",
         email: "",
-        password: "",
-        especialidad: "", 
+        password: ""
     });
 
     useEffect(() => {
-        const fetchDocentes = async () => {
+        const fetchAdministradores = async () => {
             try {
                 const user = JSON.parse(localStorage.getItem("user"));
                 if (!user || !user.idUsuario) {
                     setError("Usuario no autenticado.");
                     return;
                 }
-                const responsetododocentes = await servicioDocente.obtenerTodosDocentes();
-                setDocentes(responsetododocentes.data);
+                const responsetododocentes = await servicioAdmin.obtenerAdministradores();
+                setAdministradores(responsetododocentes.data);
             } catch (err) {
-                setError(err.response?.data?.error || "Error al cargar la información del docente");
+                setError(err.response?.data?.error || "Error al cargar la información del admin");
             }
         };
-        fetchDocentes();
+        fetchAdministradores();
     }, []);
 
     const handleLogout = () => {
@@ -60,54 +59,52 @@ export default function InformacionDocente() {
     };
 
     const limpiarFormulario = () => {
-        setFormulario({
-            nombre: "",
-            apellido_pat: "",
+        setFormulario({ 
+            nombre: "", 
+            apellido_pat: "", 
             apellido_mat: "",
             afili_seguro: "",
             num_celular: "",
             email: "",
             password: "",
-            especialidad: "",
         });
     };
 
-    const handleDele = async (docente) => {
+    const handleDele = async (admin) => {
         try {
-            let response = await servicioDocente.eliminarDocente(docente.matricula);
-            if (response.error) {
+            let response = await servicioAdmin.eliminarAdministrador(admin.matricula);
+            if (response.error){
                 throw new Error(response.error);
             }
             Swal.fire({
                 title: "Eliminación exitosa!",
-                text: "El docente ha sido eliminado correctamente.",
+                text: "El administrador ha sido eliminado correctamente.",
                 icon: "success",
                 confirmButtonText: "Aceptar",
                 background: '#fff',
                 iconColor: '#721c24',
                 confirmButtonColor: '#155724',
             });
-            const responsetododocentes = await servicioDocente.obtenerTodosDocentes();
-            setDocentes(responsetododocentes.data);
+            const responsetodosadmin = await servicioAdmin.obtenerAdministradores();
+            setAdministradores(responsetodosadmin.data);
         } catch (err) {
-            setError(err.response?.data?.error || "Error al eliminar al docente");
+            setError(err.response?.data?.error || "Error al eliminar al administrador");
         }
     };
 
-    const handleEdit = (docente) => {
+    const handleEdit = (admin) => {
         setFormulario({
-            id: docente.id || "",
-            matricula: docente.matricula || "",
-            nombre: docente.nombre || "",
-            apellido_pat: docente.apellido_pat || "",
-            apellido_mat: docente.apellido_mat || "",
-            num_celular: docente.num_celular || "",
-            afili_seguro: docente.afili_seguro || "",
-            especialidad: docente.especialidad || "",
-            email: docente.users?.email || "",
+            id: admin.id || "",
+            matricula: admin.matricula || "",
+            nombre: admin.nombre || "",
+            apellido_pat: admin.apellido_pat || "",
+            apellido_mat: admin.apellido_mat || "",
+            afili_seguro: admin.afili_seguro || "",
+            num_celular: admin.num_celular || "",
+            email: admin.users?.email || "",
             password: "",
         });
-        setIdEditando(docente.id);
+        setIdEditando(admin.id);
         setActiveTab("registro");
     };
 
@@ -118,9 +115,8 @@ export default function InformacionDocente() {
             nombre: formulario.nombre,
             apellido_pat: formulario.apellido_pat,
             apellido_mat: formulario.apellido_mat,
-            num_celular: formulario.num_celular,
             afili_seguro: formulario.afili_seguro,
-            especialidad: formulario.especialidad,
+            num_celular: formulario.num_celular,
             email: formulario.email,
             ...(formulario.password ? { password: formulario.password } : {}),
         };
@@ -128,9 +124,9 @@ export default function InformacionDocente() {
         try {
             let response;
             if (idEditando) {
-                response = await servicioDocente.actualizarPerfilDocente(datosActualizados); 
+                response = await servicioAdmin.crearAdministrador(datosActualizados);
             } else {
-                response = await servicioDocente.actualizarPerfilDocente(datosActualizados);
+                response = await servicioAdmin.crearAdministrador(datosActualizados);
             }
 
             if (response.error) {
@@ -139,7 +135,7 @@ export default function InformacionDocente() {
 
             Swal.fire({
                 title: idEditando ? "¡Actualización exitosa!" : "¡Registro exitoso!",
-                text: idEditando ? "El docente ha sido actualizado correctamente." : "El docente ha sido registrado correctamente.",
+                text: idEditando ? "El administrador ha sido actualizado correctamente." : "El estudiante ha sido registrado correctamente.",
                 icon: "success",
                 confirmButtonText: "Aceptar",
                 background: '#fff',
@@ -149,8 +145,8 @@ export default function InformacionDocente() {
 
             limpiarFormulario();
             setIdEditando(null);
-            const responseDocentes = await servicioDocente.obtenerTodosDocentes();
-            setDocentes(responseDocentes.data);
+            const responseAdminis = await servicioAdmin.obtenerAdministradores();
+            setAdministradores(responseAdminis.data);
             setActiveTab("listado");
 
         } catch (err) {
@@ -170,8 +166,8 @@ export default function InformacionDocente() {
                                 <Nav.Link href="/TalleresGestion" className="text-white">Talleres</Nav.Link>
                                 <Nav.Link href="/GimnasiosGestion" className="text-white">Gimnasios</Nav.Link>
                                 <NavDropdown title={<span className="text-white">Usuarios</span>} id="nav-basic-nav-dropdown">
-                                    <NavDropdown.Item href="/AdministradoresGestion">Administradores</NavDropdown.Item>
                                     <NavDropdown.Item href="/AlumnosGestion">Alumnos</NavDropdown.Item>
+                                    <NavDropdown.Item href="/DocentesGestion">Docentes</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link href="/InformacionAdmin" className="text-white">Datos</Nav.Link>
                             </Nav>
@@ -184,9 +180,9 @@ export default function InformacionDocente() {
             </div>
 
             <section className="container py-5">
-                <h2 className="text-center mb-4 text-success">Docentes</h2>
+                <h2 className="text-center mb-4 text-success">Administradores</h2>
                 <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} onClick={limpiarFormulario} className="mb-3" justify>
-                    <Tab eventKey="listado" title="Lista de Docentes">
+                    <Tab eventKey="listado" title="Lista de Administradores">
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
@@ -197,31 +193,31 @@ export default function InformacionDocente() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {docentes.length > 0 ? (
-                                    docentes.map((docente) => (
-                                        <tr key={docente.id}>
-                                            <td>{docente.matricula}</td>
-                                            <td>{docente.nombre} {docente.apellido_pat} {docente.apellido_mat}</td>
-                                            <td>{docente.users.email}</td>
+                                {administradores.length > 0 ? (
+                                    administradores.map((admin) => (
+                                        <tr key={admin.id}>
+                                            <td>{admin.matricula}</td>
+                                            <td>{admin.nombre} {admin.apellido_pat} {admin.apellido_mat}</td>
+                                            <td>{admin.users.email}</td>
                                             <td>
-                                                <button className="btn btn-warning btn-sm mx-1" onClick={() => handleEdit(docente)}>Editar</button>
-                                                <button className="btn btn-danger btn-sm mx-1" onClick={() => handleDele(docente)}>Eliminar</button>
+                                                <button className="btn btn-warning btn-sm mx-1" onClick={() => handleEdit(admin)}>Editar</button>
+                                                <button className="btn btn-danger btn-sm mx-1" onClick={() => handleDele(admin)}>Eliminar</button>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="5" className="text-center">No hay docentes disponibles</td>
+                                        <td colSpan="5" className="text-center">No hay administradores disponibles</td>
                                     </tr>
                                 )}
                             </tbody>
                         </Table>
                     </Tab>
-                    <Tab eventKey="registro" title={formulario.id ? "Actualizar Docente" : "Registrar Docente"}>
-                        <h2 className="text-center mb-4 text-success">{formulario.id ? "Actualizar Docente" : "Registrar Docente"}</h2>
+                    <Tab eventKey="registro" title={formulario.id ? "Actualizar Administrador" : "Registrar Administrador"}>
+                        <h2 className="text-center mb-4 text-success">{formulario.id ? "Actualizar Administrador" : "Registrar Administrador"}</h2>
                         {error && <div className="alert alert-danger">{error}</div>}
                         <form className="card p-4 shadow-sm" onSubmit={handleSubmit}>
-                            <div className="mb-3">
+                        <div className="mb-3">
                                 <label className="form-label">Matrícula</label>
                                 <input type="text" className="form-control" placeholder="Ingrese la matrícula (10 dígitos)" name="matricula" value={formulario.matricula || ""} onChange={(e) => {const value = e.target.value.replace(/\D/g, '').slice(0, 10); setFormulario({...formulario, matricula: value}); }} pattern="\d{10}" maxLength="10" disabled={!!formulario.id} required/>
                             </div>
@@ -230,6 +226,7 @@ export default function InformacionDocente() {
                                 <label className="form-label">Correo</label>
                                 <input type="email" className="form-control" name="email" value={formulario.email || ""} onChange={(e) => setFormulario({...formulario, email: e.target.value})} pattern=".+@uttec\.edu\.mx$" disabled={!!formulario.id} required/>
                             </div>
+
                             <div className="mb-3">
                                 <label className="form-label">Nombre</label>
                                 <input type="text" className="form-control" name="nombre" value={formulario.nombre} onChange={handleChange} required />
@@ -268,11 +265,6 @@ export default function InformacionDocente() {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Especialidad</label>
-                                <input type="text" className="form-control" name="especialidad" value={formulario.especialidad} onChange={handleChange} required />
-                            </div>
-
-                            <div className="mb-3">
                                 <label className="form-label">Teléfono</label>
                                 <input type="text" className="form-control" name="num_celular" value={formulario.num_celular} onChange={(e) => {const value = e.target.value.replace(/\D/g, '').slice(0,10); setFormulario({...formulario, num_celular: value});}} pattern="\d{10}" maxLength="10" required />
                             </div>
@@ -281,7 +273,6 @@ export default function InformacionDocente() {
                                 <label className="form-label">{formulario.id ? "Contraseña (opcional)" : "Contraseña"}</label>
                                 <input type="password" className="form-control" name="password" value={formulario.password} onChange={handleChange} placeholder={formulario.id ? "Nueva contraseña" : "Contraseña"} />
                             </div>
-
                             <button type="submit" className="btn btn-success btn-block">{idEditando ? "Actualizar" : "Registrar"}</button>
                         </form>
                     </Tab>

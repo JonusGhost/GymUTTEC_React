@@ -287,14 +287,14 @@ export default function InformacionAdmin() {
                             </div>
 
                             <div className="mb-3">
-                            <label className="form-label">Docentes</label>
+                            <label className="form-label">Fitness Coach</label>
                                 <select 
                                     name="docenteId" 
                                     className="form-control" 
                                     value={formulario.docenteId_1} 
                                     onChange={handleChange}
                                 >
-                                    <option value="">Seleccione un docente</option>
+                                    <option value="">Seleccione un Coach</option>
                                     {docentes.map(docente => (
                                         <option key={docente.id} value={docente.matricula}>
                                             {docente.nombre} {docente.apellido_pat}
@@ -310,7 +310,7 @@ export default function InformacionAdmin() {
                                     value={formulario.docenteId_2} 
                                     onChange={handleChange}
                                 >
-                                    <option value="">Seleccione un docente</option>
+                                    <option value="">Seleccione un Coach</option>
                                     {docentes.map(docente => (
                                         <option key={docente.id} value={docente.matricula}>
                                             {docente.nombre} {docente.apellido_pat}
@@ -326,7 +326,7 @@ export default function InformacionAdmin() {
                                     value={formulario.docenteId_3} 
                                     onChange={handleChange}
                                 >
-                                    <option value="">Seleccione un docente</option>
+                                    <option value="">Seleccione un Coach</option>
                                     {docentes.map(docente => (
                                         <option key={docente.id} value={docente.matricula}>
                                             {docente.nombre} {docente.apellido_pat}

@@ -1,20 +1,24 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Importar React Router
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; 
 
 import Principal from "./pages/Principal";
 import AlumnoTalleres from "./pages/AlumnoTalleres";
 import InformacionAlumno from "./pages/InformacionAlumno"
-import InformacionTaller from "./pages/InformacionTaller"; // Import InformacionTaller
+import InformacionTaller from "./pages/InformacionTaller";
 import DocenteTaller from "./pages/DocenteTaller";
-import Login from "./pages/Login"; // Importar el componente Login
+import Login from "./pages/Login"; 
 
 // Rutas Docente
-import DocentesGestion from "./pages/DocentesGestion";
 
 import TalleresGestion from "./pages/TalleresGestion";
 import InformacionAdmin from "./pages/InformacionAdmin";
 import GimnasiosGestion from "./pages/GimnasiosGestion";
 import AlumnosGestion from "./pages/AlumnosGestion";
+import AdministradoresGestion from "./pages/AdministradoresGestion";
+import DocentesGestion from "./pages/DocentesGestion";
+
+// Rutas Docentes
+import InformacionDocente from "./pages/InformacionDocente";
 
 function App() {
   return (
@@ -33,11 +37,11 @@ function App() {
         <Route path="/TalleresGestion" element={<TalleresGestion />} /> 
         <Route path="/GimnasiosGestion" element={<GimnasiosGestion />} /> 
         <Route path="/AlumnosGestion" element={<AlumnosGestion />} /> 
-        { /*
-        <Route path="/AdministradoresGestion" element={<AdministradoresGestion />} /> 
-        <Route path="/DocenteGestion" element={<DocenteGestion />} />
-        */ } 
         <Route path="/DocentesGestion" element={<DocentesGestion />} />
+        <Route path="/AdministradoresGestion" element={<AdministradoresGestion />} />
+        
+        {/* Ruta Docentes */}
+        <Route path="/InformacionDocente" element={<InformacionDocente/>}></Route>
       </Routes>
     </Router>
   );

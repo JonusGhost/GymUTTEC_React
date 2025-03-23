@@ -130,6 +130,66 @@ export default function AlumnoTalleres() {
           )}
         </div>
       </section>
+
+      <section className="container py-5">
+        <h2 className="text-center mb-4 text-success">Gimnasios donde estás inscrito</h2>
+        {error && <div className="alert alert-danger">{error}</div>}
+
+        <div className="d-flex overflow-auto">
+          {talleresInscritos.length > 0 ? (
+            talleresInscritos.map((taller) => (
+              <div
+                key={taller.id}
+                className="card me-3"
+                style={{ width: "200px", border: "none", cursor: "pointer" }}
+                onClick={() => navigate(`/InformacionTaller/${taller.id}`)}
+              >
+                <img
+                  src={`http://localhost:8000/storage/${taller.imagen}`}
+                  alt={taller.nombre_tall}
+                  className="card-img-top"
+                  style={{ height: "150px", objectFit: "cover", borderRadius: "50%" }}
+                />
+                <div className="card-body text-center">
+                  <h5 className="card-title text-success">{taller.nombre_tall}</h5>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center">No estás inscrito en ningún taller.</p>
+          )}
+        </div>
+      </section>
+
+      <section className="container py-5 bg-light">
+        <h2 className="text-center mb-4 text-success">Talleres por explorar</h2>
+        <div className="row g-4">
+          {talleresExplorar.length > 0 ? (
+            talleresExplorar.map((taller) => (
+              <div key={taller.id} className="col-md-6">
+                <div
+                  className="d-flex bg-white p-3 rounded shadow-sm"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate(`/InformacionTaller/${taller.id}`)}
+                >
+                  <img
+                    src={`http://localhost:8000/storage/${taller.imagen}`}
+                    alt={taller.nombre_tall}
+                    className="rounded me-3"
+                    style={{ width: "150px", height: "150px", objectFit: "cover" }}
+                  />
+                  <div>
+                    <h4 className="text-success">{taller.nombre_tall}</h4>
+                    <p>{taller.descripcion}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center">No hay talleres disponibles para explorar.</p>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

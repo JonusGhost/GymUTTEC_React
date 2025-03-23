@@ -1,22 +1,28 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // Para la redirección
 import "bootstrap/dist/css/bootstrap.min.css";
-import { servicioTaller } from "../services/userService";
+import { servicioGimnasio, servicioTaller } from "../services/userService";
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 export default function HomePage() {
   const [talleres, setTalleres] = useState([]);
+  const [gimnasios, setGimnasios] = useState([]);
 
   useEffect(() => {
-    // Obtener talleres usando el servicio de Axios
     const cargarTalleres = async () => {
       try {
         const response = await servicioTaller.obtenerTalleres();
         setTalleres(response.data);
       } catch (error) {
         console.error("Error cargando talleres:", error);
+      }
+      try {
+        const responseg = await servicioGimnasio.obtenerGimnasios();
+        setGimnasios(responseg.data);
+      } catch (error) {
+        console.error("Error cargando gimnasios:", error);
       }
     };
     cargarTalleres();
@@ -63,12 +69,12 @@ export default function HomePage() {
                 <div className="d-flex bg-light p-3 rounded shadow-sm">
                   <img 
                     src={taller.imagen} 
-                    alt={taller.nombre} 
+                    alt={taller.nombre_tall} 
                     className="rounded me-3" 
                     style={{ width: "100px", height: "100px", objectFit: "cover" }} 
                   />
                   <div>
-                    <h4 className="text-success">{taller.nombre}</h4>
+                    <h4 className="text-success">{taller.nombre_tall}</h4>
                     <p>{taller.descripcion}</p>
                   </div>
                 </div>
@@ -76,6 +82,36 @@ export default function HomePage() {
             ))
           ) : (
             <p className="text-center">Cargando talleres...</p>
+          )}
+        </div>
+      </section>
+
+      {/* Sección de Gimnasios */}
+      <section className="container py-5">
+        <h2 className="text-center mb-4 text-success">Gimnasios</h2>
+        <p className="text-center">Explora los diferentes gimnasios que ofrecemos para mejorar tu condición física y bienestar.</p>
+
+        {/* Lista de Talleres */}
+        <div className="row g-4">
+          {gimnasios.length > 0 ? (
+            gimnasios.map((gimnasio, index) => (
+              <div key={index} className="col-md-6">
+                <div className="d-flex bg-light p-3 rounded shadow-sm">
+                  <img 
+                    src={gimnasio.imagen} 
+                    alt={gimnasio.nombre_tall} 
+                    className="rounded me-3" 
+                    style={{ width: "100px", height: "100px", objectFit: "cover" }} 
+                  />
+                  <div>
+                    <h4 className="text-success">{gimnasio.nombre_tall}</h4>
+                    <p>{gimnasio.descripcion}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center">Cargando gimnasios...</p>
           )}
         </div>
       </section>
