@@ -304,45 +304,44 @@ export default function InformacionAdmin() {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Horario</label>
-                                <Table striped bordered hover>
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            {hours.map(hour => (
-                                                <th key={hour}>
-                                                    <label className="form-label">{hour}</label>
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {days.map(day => (
-                                            <tr key={day}>
-                                                <td>
-                                                    <label className="form-label">
-                                                        {day.charAt(0).toUpperCase() + day.slice(1)}
-                                                    </label>
-                                                </td>
-                                                {hours.map(hour => (
-                                                    <td key={hour}>
-                                                        <div className="form-check form-check-inline">
-                                                            <input
-                                                                type="checkbox"
-                                                                className="form-check-input"
-                                                                value={hour}
-                                                                data-day={day}
-                                                                checked={formulario.horario[day]?.includes(hour) || false}
-                                                                onChange={handleChange}
-                                                            />
-                                                        </div>
-                                                    </td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                              <label className="form-label">Horario</label>
+                              <Table striped bordered hover>
+                                <thead>
+                                  <tr>
+                                    <th>Hora</th>
+                                    {days.map(day => (
+                                      <th key={day}>
+                                        <label className="form-label">{day.charAt(0).toUpperCase() + day.slice(1)}</label>
+                                      </th>
+                                    ))}
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {hours.map(hour => (
+                                    <tr key={hour}>
+                                      <td>
+                                        <label className="form-label">{hour}</label>
+                                      </td>
+                                      {days.map(day => (
+                                        <td key={`${day}-${hour}`}>
+                                          <div className="form-check form-check-inline">
+                                            <input
+                                              type="checkbox"
+                                              className="form-check-input"
+                                              value={hour}
+                                              data-day={day}
+                                              checked={formulario.horario?.[day]?.includes(hour) || false}
+                                              onChange={handleChange}
+                                            />
+                                          </div>
+                                        </td>
+                                      ))}
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </Table>
                             </div>
+
                             <button type="submit" className="btn btn-success w-100">{formulario.id ? "Actualizar Taller" : "Registrar Taller"}
                             </button>
                         </form>

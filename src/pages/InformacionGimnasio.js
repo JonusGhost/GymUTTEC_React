@@ -13,7 +13,7 @@ export default function InformacionGimnasio() {
   const [gimnasio, setGimnasio] = useState(null);
   const [alumno, setAlumno] = useState(null);
   const [horarios, setHorarios] = useState([]);
-  const [docentes, setDocentes] = useState(null);
+  const [docentes, setDocentes] = useState([]);
   const [inscrito, setInscrito] = useState(false);
   const [error, setError] = useState("");
 
@@ -38,7 +38,7 @@ export default function InformacionGimnasio() {
           responseGimnasio.data.emp_docente_1,
           responseGimnasio.data.emp_docente_2,
           responseGimnasio.data.emp_docente_3
-        ];
+        ].filter(Boolean);
   
         for (const matricula of docentesMatriculas) {
           if (matricula) {
@@ -141,7 +141,7 @@ export default function InformacionGimnasio() {
           </div>
         </div>
 
-        {docentes.length > 0 && (
+        {docentes && docentes.length > 0 && (
           <div className="mt-4 border p-3 rounded shadow-sm">
             <h4>Docentes Responsables</h4>
             {docentes.map((docente, index) => (
@@ -178,7 +178,7 @@ export default function InformacionGimnasio() {
                     {["lunes", "martes", "miercoles", "jueves", "viernes", "sabado"].map((dia, index) => (
                       <td key={index} 
                           style={{
-                            backgroundColor: horarios[dia]?.includes(hora) ? '#28a745' : '#6c757d', 
+                            backgroundColor: horarios && horarios[dia]?.includes(hora) ? '#28a745' : '#6c757d', 
                             color: '#fff'
                           }} 
                       ></td>
