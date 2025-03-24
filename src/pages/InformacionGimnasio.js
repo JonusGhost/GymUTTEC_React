@@ -14,37 +14,55 @@ export default function InformacionGimnasio() {
   const [docente, setDocente] = useState(null);
   const [inscrito, setInscrito] = useState(false);
   const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
     const cargarInformacionGimnasio = async () => {
       try {
+        setCargando(true);
+        setError("");
+        
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user || !user.idUsuario) {
           setError("Usuario no autenticado.");
           return;
         }
+        
         const matricula = user.idUsuario;
+        console.log('Cargando datos para matrícula:', matricula, 'y gimnasio ID:', id);
+
+        // Obtener perfil del estudiante primero
         const response = await servicioEstudiante.obtenerPerfilEstudiante(matricula);
-        const responseIns = await servicioEstudiante.verificarInscripcion({ matricula, id });
+        setAlumno(response.data);
 
-        setInscrito(responseIns.data ?? false);
+        // Verificar inscripción
+        const responseIns = await servicioEstudiante.verificarInscripcion({ 
+          matricula, 
+          gimnasio_id: id 
+        });
+        console.log('Respuesta verificación inscripción:', responseIns.data);
+        setInscrito(Boolean(responseIns.data?.inscrito));
 
+        // Obtener datos del gimnasio
         const responseGimnasio = await servicioGimnasio.obtenerGimnasio(id);
-        const matricula_doc = responseGimnasio.data.emp_docente;
+        setGimnasio(responseGimnasio.data);
 
+        // Obtener docente si existe
+        const matricula_doc = responseGimnasio.data.emp_docente;
         if (matricula_doc) {
           const responseDocente = await servicioDocente.obtenerPerfilDocente(matricula_doc);
           setDocente(responseDocente.data);
-        } else {
-          setDocente(null);
         }
 
+        // Obtener horarios
         const responseHorarios = await servicioGimnasio.obtenerHorariosGimnasio(id);
-        setAlumno(response.data);
         setHorarios(responseHorarios.data || {});
-        setGimnasio(responseGimnasio.data);
+        
       } catch (err) {
+        console.error('Error al cargar información:', err);
         setError(err.response?.data?.error || "Error al cargar la información del Gimnasio");
+      } finally {
+        setCargando(false);
       }
     };
 
@@ -56,7 +74,13 @@ export default function InformacionGimnasio() {
   const handleInscrp = async (e) => {
     e.preventDefault();
     try {
-      await servicioEstudiante.inscribirGimnasio({ matricula: alumno.matricula, gimnasio_id: gimnasio.id });
+      if (!alumno || !gimnasio) return;
+      
+      await servicioEstudiante.inscribirGimnasio({ 
+        matricula: alumno.matricula, 
+        gimnasio_id: gimnasio.id 
+      });
+      
       setInscrito(true);
       Swal.fire({
         title: '¡Inscrito!',
@@ -67,14 +91,21 @@ export default function InformacionGimnasio() {
         confirmButtonColor: '#155724',
       });
     } catch (err) {
-      setError(err.response?.data?.error || "Error al actualizar la información del alumno");
+      console.error('Error al inscribir:', err);
+      setError(err.response?.data?.error || "Error al inscribirse en el gimnasio");
     }
   };
 
   const handleAnular = async (e) => {
     e.preventDefault();
     try {
-      await servicioEstudiante.cancelarInscripcionGim({ matricula: alumno.matricula, gimnasio_id: gimnasio.id });
+      if (!alumno || !gimnasio) return;
+      
+      await servicioEstudiante.cancelarInscripcionGim({ 
+        matricula: alumno.matricula, 
+        gimnasio_id: gimnasio.id 
+      });
+      
       setInscrito(false);
       Swal.fire({
         title: '¡Inscripción anulada!',
@@ -85,12 +116,17 @@ export default function InformacionGimnasio() {
         confirmButtonColor: '#155724',
       });
     } catch (err) {
+      console.error('Error al anular inscripción:', err);
       setError(err.response?.data?.error || "Error al anular la inscripción");
     }
   };
 
-  if (!gimnasio) {
+  if (cargando) {
     return <div className="text-center p-5">Cargando información del gimnasio...</div>;
+  }
+
+  if (!gimnasio) {
+    return <div className="text-center p-5">No se pudo cargar la información del gimnasio.</div>;
   }
 
   return (
@@ -120,6 +156,7 @@ export default function InformacionGimnasio() {
                 <a href={gimnasio.enlace_grupo} target="_blank" rel="noopener noreferrer"> Grupo</a>
               </p>
             )}
+            
             <form onSubmit={inscrito ? handleAnular : handleInscrp} className="d-flex justify-content-start">
               {inscrito ? (
                 <button type="submit" className="btn btn-danger w-50 py-3 fs-5">Anular Inscripción</button>
@@ -128,39 +165,54 @@ export default function InformacionGimnasio() {
               )}
             </form>
 
-            {error && <div className="alert alert-danger">{error}</div>}
+            {error && <div className="alert alert-danger mt-3">{error}</div>}
           </div>
         </div>
 
         {docente && (
           <div className="mt-4 border p-3 rounded shadow-sm">
             <h4>Docente Responsable</h4>
-            <p><strong>Nombre:</strong> {docente.nombre} {docente.apellido_pat} {docente.apellido_mat}</p>
-            <p><strong>Especialidad:</strong> {docente.especialidad}</p>
-            <p><strong>Contacto:</strong> {docente.num_celular}</p>
+            <p><strong>Nombre:</strong> {docente.docente.nombre} {docente.docente.apellido_pat} {docente.docente.apellido_mat}</p>
+            <p><strong>Especialidad:</strong> {docente.docente.especialidad}</p>
+            <p><strong>Contacto:</strong> {docente.docente.num_celular}</p>
           </div>
         )}
 
-        <div className="border p-3 rounded shadow-sm mt-4">
-          <h4>Horarios Disponibles</h4>
-          <table className="table table-bordered text-center">
-            <thead className="table-success">
-              <tr>
-                <th>Hora</th>
-                {["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"].map(dia => <th key={dia}>{dia}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"].map(hora => (
-                <tr key={hora}>
-                  <td>{hora}</td>
-                  {["lunes", "martes", "miercoles", "jueves", "viernes"].map(dia => (
-                    <td key={dia} className={horarios[dia]?.includes(hora) ? "bg-success text-white" : "bg-secondary"}></td>
+        <div className="row mt-4">
+          <div className="col-md-12">
+            <div className="border p-3 rounded shadow-sm">
+              <h4>Horarios Disponibles</h4>
+              <table className="table table-bordered text-center">
+                <thead className="table-success">
+                  <tr>
+                    <th>Hora</th>
+                    <th>Lunes</th>
+                    <th>Martes</th>
+                    <th>Miércoles</th>
+                    <th>Jueves</th>
+                    <th>Viernes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"].map((hora) => (
+                    <tr key={hora}>
+                      <td>{hora}</td>
+                      {["lunes", "martes", "miercoles", "jueves", "viernes"].map((dia) => (
+                        <td key={dia} 
+                            style={{
+                              backgroundColor: horarios[dia]?.includes(hora) ? '#28a745' : 'transparent', 
+                              color: horarios[dia]?.includes(hora) ? '#fff' : '#000'
+                            }} 
+                        >
+                          {horarios[dia]?.includes(hora) ? "✓" : ""}
+                        </td>
+                      ))}
+                    </tr>
                   ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
     </div>

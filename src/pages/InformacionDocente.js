@@ -115,9 +115,8 @@ export default function InformacionDocente() {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" className="text-white" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href="/" className="text-white">Talleres</Nav.Link>
-                            <Nav.Link href="/" className="text-white">Gimnasios</Nav.Link>
-                            <Nav.Link href="/ListaDocente" className="text-white">Pase de Lista</Nav.Link>
+                            <Nav.Link href="/DocenteTaller" className="text-white">Talleres</Nav.Link>
+                            <Nav.Link href="/DocenteGim" className="text-white">Gimnasios</Nav.Link>
                         </Nav>
                         <Nav>
                             <Nav.Link onClick={handleLogout} className="btn btn-danger btn-sm text-white">Cerrar sesión</Nav.Link>

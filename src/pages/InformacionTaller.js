@@ -107,7 +107,7 @@ export default function InformacionTaller() {
           <div className="col-md-4">
             <img
               src={taller.imagen || "https://via.placeholder.com/300"}
-              alt={taller.nombre}
+              alt={taller.nombre_tall}
               className="img-fluid rounded"
             />
           </div>
@@ -136,9 +136,9 @@ export default function InformacionTaller() {
         {docente && (
           <div className="mt-4 border p-3 rounded shadow-sm">
             <h4>Docente Responsable</h4>
-            <p><strong>Nombre:</strong> {docente.nombre} {docente.apellido_pat} {docente.apellido_mat}</p>
-            <p><strong>Especialidad:</strong> {docente.especialidad}</p>
-            <p><strong>Contacto:</strong> {docente.num_celular}</p>
+            <p><strong>Nombre:</strong> {docente.docente.nombre} {docente.docente.apellido_pat} {docente.docente.apellido_mat}</p>
+            <p><strong>Especialidad:</strong> {docente.docente.especialidad}</p>
+            <p><strong>Contacto:</strong> {docente.docente.num_celular}</p>
           </div>
         )}
 
@@ -158,16 +158,18 @@ export default function InformacionTaller() {
                 </tr>
               </thead>
               <tbody>
-                {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"].map((hora, idx) => (
-                  <tr key={idx}>
+                {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"].map((hora) => (
+                  <tr key={hora}>
                     <td>{hora}</td>
-                    {["lunes", "martes", "miercoles", "jueves", "viernes"].map((dia, index) => (
-                      <td key={index} 
+                    {["lunes", "martes", "miercoles", "jueves", "viernes"].map((dia) => (
+                      <td key={dia} 
                           style={{
-                            backgroundColor: horarios[dia]?.includes(hora) ? '#28a745' : '#6c757d', 
-                            color: '#fff'
+                            backgroundColor: horarios[dia]?.includes(hora) ? '#28a745' : 'transparent', 
+                            color: horarios[dia]?.includes(hora) ? '#fff' : '#000'
                           }} 
-                      ></td>
+                      >
+                        {horarios[dia]?.includes(hora) ? "✓" : ""}
+                      </td>
                     ))}
                   </tr>
                 ))}

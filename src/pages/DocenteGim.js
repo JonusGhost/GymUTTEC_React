@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { servicioDocente, servicioAsistencia, servicioTaller } from "../services/userService";
+import { servicioDocente, servicioAsistencia, servicioGimnasio } from "../services/userService";
 import Swal from 'sweetalert2';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -11,12 +11,12 @@ import Tabs from 'react-bootstrap/Tabs';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-export default function DocenteTaller() {
+export default function DocenteGimnasio() {
     const { id } = useParams(); 
     const navigate = useNavigate();
     const [docente, setDocente] = useState(null);
     const [activeTab, setActiveTab] = useState("informacion");
-    const [taller, setTaller] = useState(null);
+    const [gimnasio, setGimnasio] = useState(null);
     const [horarios, setHorarios] = useState([]); 
     const [alumnos, setAlumnos] = useState([]);
     const [asistencia, setAsistencia] = useState({}); 
@@ -25,7 +25,7 @@ export default function DocenteTaller() {
     const [sinAsignar, setSinAsignar] = useState(false);
 
     useEffect(() => {
-        const cargarInformacionTaller = async () => {
+        const cargarInformacionGimnasio = async () => {
             try {
                 const user = JSON.parse(localStorage.getItem("user"));
                 if (!user || user.role !== "D") {
@@ -36,25 +36,25 @@ export default function DocenteTaller() {
                 const matricula = user.idUsuario;
                 const response = await servicioDocente.obtenerPerfilDocente(matricula);
                 setDocente(response.data);
-                
-                // Verificar si tiene taller asignado
-                if (!response.data.docente.taller || !response.data.docente.taller.id) {
+
+                // Verificar si tiene gimnasio asignado
+                if (!response.data.docente.gimnasio || !response.data.docente.gimnasio.id) {
                     setSinAsignar(true);
                     return;
                 }
 
-                const id_taller = response.data.docente.taller.id;
+                const id_gimnasio = response.data.docente.gimnasio.id;
 
-                // Obtener información del taller
-                const responseTaller = await servicioTaller.obtenerTaller(id_taller);
-                setTaller(responseTaller.data);
+                // Obtener información del gimnasio
+                const responseGim = await servicioGimnasio.obtenerGimnasio(id_gimnasio);
+                setGimnasio(responseGim.data);
                 
-                // Obtener horarios del taller
-                const responseHorarios = await servicioTaller.obtenerHorariosTaller(id_taller);
+                // Obtener horarios del gimnasio
+                const responseHorarios = await servicioGimnasio.obtenerHorariosGimnasio(id_gimnasio);
                 setHorarios(responseHorarios.data);
 
-                // Obtener lista de alumnos inscritos en el taller
-                const responseAlumnos = await servicioAsistencia.obtenerListaAsistenciaTal(id_taller);
+                // Obtener lista de alumnos inscritos en el gimnasio
+                const responseAlumnos = await servicioAsistencia.obtenerListaAsistenciaGim(id_gimnasio);
                 setAlumnos(responseAlumnos.data.alumnos || []);
             } catch (err) {
                 setError(err.response?.data?.error || "Error al cargar la información");
@@ -62,7 +62,7 @@ export default function DocenteTaller() {
             }
         };
 
-        cargarInformacionTaller();
+        cargarInformacionGimnasio();
     }, [id, navigate]);
 
     const handleLogout = () => {
@@ -81,7 +81,7 @@ export default function DocenteTaller() {
     const handleSubmitAttendance = async () => {
         try {
             const datos = {
-                taller_id: taller.id,
+                gimnasio_id: gimnasio.id,
                 horas_asignadas: horasImpartidas,
                 asistencia: Object.entries(asistencia).reduce((acc, [matricula, estado]) => {
                     acc[matricula] = estado;
@@ -89,7 +89,7 @@ export default function DocenteTaller() {
                 }, {}),
             };
     
-            await servicioAsistencia.pasarListaTal(datos);
+            await servicioAsistencia.pasarListaGim(datos);
     
             Swal.fire({
                 title: "¡Asistencia registrada!",
@@ -107,35 +107,35 @@ export default function DocenteTaller() {
         } catch (err) {
             setError(err.response?.data?.error || "Error al subir la asistencia");
         }
-    };           
-    
-    if(sinAsignar){
+    };                
 
-    return (
-        <>
-            <div className="container-fluid p-0">
-                <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: "#0e9443" }}>
-                    <Container>
-                        <Navbar.Brand className="text-white">GYMUTTEC</Navbar.Brand>
-                        <Navbar.Toggle aria-controls="responsive-navbar-nav" className="text-white" />
-                        <Navbar.Collapse id="responsive-navbar-nav">
-                            <Nav className="me-auto">
-                                <Nav.Link href="/DocenteGim" className="text-white">Gimnasio</Nav.Link>
-                                <Nav.Link href="/InformacionDocente" className="text-white">Datos</Nav.Link>
-                            </Nav>
-                            <Nav>
-                                <Nav.Link onClick={handleLogout} className="btn btn-danger btn-sm text-white">Cerrar sesión</Nav.Link>
-                            </Nav>
-                        </Navbar.Collapse>
-                    </Container>
-                </Navbar>
-            </div>
-            <section className="container py-5">
+    if (sinAsignar) {
+        return (
+            <>
+                <div className="container-fluid p-0">
+                    <Navbar collapseOnSelect expand="lg" style={{ backgroundColor: "#0e9443" }}>
+                        <Container>
+                            <Navbar.Brand className="text-white">GYMUTTEC</Navbar.Brand>
+                            <Navbar.Toggle aria-controls="responsive-navbar-nav" className="text-white" />
+                            <Navbar.Collapse id="responsive-navbar-nav">
+                                <Nav className="me-auto">
+                                    <Nav.Link href="/DocenteTaller" className="text-white">Taller</Nav.Link>
+                                    <Nav.Link href="/InformacionDocente" className="text-white">Datos</Nav.Link>
+                                </Nav>
+                                <Nav>
+                                    <Nav.Link onClick={handleLogout} className="btn btn-danger btn-sm text-white">Cerrar sesión</Nav.Link>
+                                </Nav>
+                            </Navbar.Collapse>
+                        </Container>
+                    </Navbar>
+                </div>
+
+                <section className="container py-5">
                     <div className="card shadow">
                         <div className="card-body text-center py-5">
-                            <h2 className="text-danger mb-4">Taller sin asignar</h2>
-                            <p className="lead">Actualmente no tienes un taller asignado.</p>
-                            <p>Por favor, contacta al administrador para que te asigne a un taller.</p>
+                            <h2 className="text-danger mb-4">Gimnasio sin asignar</h2>
+                            <p className="lead">Actualmente no tienes un gimnasio asignado.</p>
+                            <p>Por favor, contacta al administrador para que te asigne a un gimnasio.</p>
                         </div>
                     </div>
                 </section>
@@ -152,7 +152,7 @@ export default function DocenteTaller() {
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" className="text-white" />
                         <Navbar.Collapse id="responsive-navbar-nav">
                             <Nav className="me-auto">
-                                <Nav.Link href="/DocenteGim" className="text-white">Gimnasio</Nav.Link>
+                                <Nav.Link href="/DocenteTaller" className="text-white">Taller</Nav.Link>
                                 <Nav.Link href="/InformacionDocente" className="text-white">Datos</Nav.Link>
                             </Nav>
                             <Nav>
@@ -164,30 +164,30 @@ export default function DocenteTaller() {
             </div>
 
             <section className="container py-5">
-                <h2 className="text-center mb-4 text-success">{"Taller" || "Cargando..."}</h2>
+                <h2 className="text-center mb-4 text-success">{gimnasio?.nombre_gim || "Cargando..."}</h2>
                 {error && <div className="alert alert-danger">{error}</div>}
 
-                <Tabs defaultActiveKey="informacion" id="taller-tabs" className="mb-3" activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
-                    {/* Pestaña 1: Información del Taller */}
-                    <Tab eventKey="informacion" title="Información del Taller">
-                        {taller && (
+                <Tabs defaultActiveKey="informacion" id="gimnasio-tabs" className="mb-3" activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
+                    {/* Pestaña 1: Información del Gimnasio */}
+                    <Tab eventKey="informacion" title="Información del Gimnasio">
+                        {gimnasio ? (
                             <div className="row">
                                 <div className="col-md-4">
                                     <img
-                                        src={taller.imagen || "https://via.placeholder.com/300"}
-                                        alt={taller.nombre_tall}
+                                        src={gimnasio.imagen || "https://via.placeholder.com/300"}
+                                        alt={gimnasio.nombre_gim}
                                         className="img-fluid rounded mb-3"
                                     />
                                 </div>
 
                                 <div className="col-md-8">
-                                    <h3 className="text-success">{taller.nombre_tall}</h3>
-                                    <p><strong>Descripción:</strong> {taller.descripcion}</p>
-                                    <p><strong>Cupo:</strong> {taller.num_alumnos} alumnos</p>
+                                    <h3 className="text-success">{gimnasio.nombre_gim}</h3>
+                                    <p><strong>Descripción:</strong> {gimnasio.descripcion}</p>
+                                    <p><strong>Cupo:</strong> {gimnasio.num_alumnos} alumnos</p>
                                     <p><strong>Enlace de Grupo:</strong> 
-                                        {taller.enlace_grupo ? (
-                                            <a href={taller.enlace_grupo} target="_blank" rel="noopener noreferrer" className="ms-2">
-                                                {taller.enlace_grupo}
+                                        {gimnasio.enlace_grupo ? (
+                                            <a href={gimnasio.enlace_grupo} target="_blank" rel="noopener noreferrer" className="ms-2">
+                                                {gimnasio.enlace_grupo}
                                             </a>
                                         ) : " No disponible"}
                                     </p>
@@ -227,6 +227,12 @@ export default function DocenteTaller() {
                                             </tbody>
                                         </Table>
                                     </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="text-center py-5">
+                                <div className="spinner-border text-success" role="status">
+                                    <span className="visually-hidden">Cargando...</span>
                                 </div>
                             </div>
                         )}
@@ -288,7 +294,7 @@ export default function DocenteTaller() {
                                         ) : (
                                             <tr>
                                                 <td colSpan="3" className="text-center py-4">
-                                                    No hay alumnos inscritos en este taller
+                                                    No hay alumnos inscritos en este gimnasio
                                                 </td>
                                             </tr>
                                         )}

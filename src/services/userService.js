@@ -54,9 +54,13 @@ export const servicioAdmin = {
 
 // Servicios para asistencia
 export const servicioAsistencia = {
-    obtenerTodasAsistencias: () => api.get('/asistencias'),
-    obtenerListaAsistencia: (tallerId) => api.get(`/asistencias/${tallerId}`),
-    pasarLista: (datos) => api.post('/asistencias/pasar-lista', datos)
+    obtenerTodasAsistencias: () => api.get('/asistencias-tal'),
+    obtenerTodasAsistencias: () => api.get('/asistencias-gim'),
+
+    obtenerListaAsistenciaTal: (tallerId) => api.get(`/asistencias-taller/${tallerId}`),
+    pasarListaTal: (datos) => api.post('/asistencias/pasar-lista-Taller', datos),
+    obtenerListaAsistenciaGim: (gimnasioId) => api.get(`/asistencias-gimnasio/${gimnasioId}`),
+    pasarListaGim: (datos) => api.post('/asistencias/pasar-lista-Gimnasio', datos),
 };
 
 // Servicios para talleres

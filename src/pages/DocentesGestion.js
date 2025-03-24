@@ -41,7 +41,6 @@ export default function InformacionDocente() {
                     return;
                 }
                 const responsetododocentes = await servicioDocente.obtenerTodosDocentes();
-                console.log(responsetododocentes.data); 
                 setDocentes(responsetododocentes.data);
             } catch (err) {
                 setError(err.response?.data?.error || "Error al cargar la información del docente");

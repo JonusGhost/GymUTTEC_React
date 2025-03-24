@@ -5,7 +5,6 @@ import Principal from "./pages/Principal";
 import AlumnoTalleres from "./pages/AlumnoTalleres";
 import InformacionAlumno from "./pages/InformacionAlumno"
 import InformacionTaller from "./pages/InformacionTaller";
-import DocenteTaller from "./pages/DocenteTaller";
 import Login from "./pages/Login"; 
 
 // Rutas Docente
@@ -19,7 +18,8 @@ import DocentesGestion from "./pages/DocentesGestion";
 
 // Rutas Docentes
 import InformacionDocente from "./pages/InformacionDocente";
-import ListaDocente from "./pages/PaseLista"
+import DocenteTaller from "./pages/DocenteTaller"
+import DocenteGim from "./pages/DocenteGim"
 
 // Rutas ---
 import InformacionGimnasio from "./pages/InformacionGimnasio";
@@ -32,7 +32,6 @@ function App() {
         <Route path="/AlumnoTalleres" element={<AlumnoTalleres />} /> 
         <Route path="/InformacionAlumno" element={<InformacionAlumno />} />
 
-        <Route path="/docenteTaller" element={<DocenteTaller/>}/>
         <Route path="/login" element={<Login />} /> {/* Ruta para Login */}
 
         {/* Ruta Administradores */}
@@ -45,7 +44,8 @@ function App() {
         
         {/* Ruta Docentes */}
         <Route path="/InformacionDocente" element={<InformacionDocente/>}></Route>
-        <Route path="/ListaDocente" element={<ListaDocente/>}></Route>
+        <Route path="/DocenteTaller" element={<DocenteTaller/>}></Route>
+        <Route path="/DocenteGim" element={<DocenteGim/>}></Route>
         
         {/* Ruta --- */}
         <Route path="/InformacionTaller/:id" element={<InformacionTaller/>}/>
