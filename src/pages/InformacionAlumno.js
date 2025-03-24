@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaUser } from "react-icons/fa";
 import { servicioEstudiante } from "../services/userService";
 import Swal from 'sweetalert2';
 import Container from 'react-bootstrap/Container';

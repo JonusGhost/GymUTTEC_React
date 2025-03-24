@@ -189,9 +189,9 @@ export default function InformacionEstudiante() {
             </div>
 
             <section className="container py-5">
-                <h2 className="text-center mb-4 text-success">Estudiantes</h2>
+                <h2 className="text-center mb-4 text-success">Alumnos</h2>
                 <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} onClick={limpiarFormulario} className="mb-3" justify>
-                    <Tab eventKey="listado" title="Lista de Estudiantes">
+                    <Tab eventKey="listado" title="Lista de Alumnos">
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
@@ -216,14 +216,14 @@ export default function InformacionEstudiante() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="5" className="text-center">No hay estudiantes disponibles</td>
+                                        <td colSpan="5" className="text-center">No hay alumnos disponibles</td>
                                     </tr>
                                 )}
                             </tbody>
                         </Table>
                     </Tab>
-                    <Tab eventKey="registro" title={formulario.id ? "Actualizar Estudiante" : "Registrar Estudiante"}>
-                        <h2 className="text-center mb-4 text-success">{formulario.id ? "Actualizar Estudiante" : "Registrar Estudiante"}</h2>
+                    <Tab eventKey="registro" title={formulario.id ? "Actualizar Alumnos" : "Registrar Alumnos"}>
+                        <h2 className="text-center mb-4 text-success">{formulario.id ? "Actualizar Alumnos" : "Registrar Alumnos"}</h2>
                         {error && <div className="alert alert-danger">{error}</div>}
                         <form className="card p-4 shadow-sm" onSubmit={handleSubmit}>
                             <div className="mb-3">

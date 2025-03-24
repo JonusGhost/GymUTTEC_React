@@ -2,9 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { servicioGimnasio } from "../services/userService";
-import { servicioDocente } from "../services/userService";
-import { servicioEstudiante } from "../services/userService";
+import { servicioGimnasio, servicioDocente, servicioEstudiante } from "../services/userService";
 import Swal from 'sweetalert2';
 
 export default function InformacionGimnasio() {
@@ -12,8 +10,8 @@ export default function InformacionGimnasio() {
   const navigate = useNavigate();
   const [gimnasio, setGimnasio] = useState(null);
   const [alumno, setAlumno] = useState(null);
-  const [horarios, setHorarios] = useState([]);
-  const [docentes, setDocentes] = useState([]);
+  const [horarios, setHorarios] = useState({});
+  const [docente, setDocente] = useState(null);
   const [inscrito, setInscrito] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,36 +25,29 @@ export default function InformacionGimnasio() {
         }
         const matricula = user.idUsuario;
         const response = await servicioEstudiante.obtenerPerfilEstudiante(matricula);
-        const responseIns = await servicioEstudiante.verificarInscripcion(matricula, id);
-        setInscrito(!!responseIns.data);
-  
+        const responseIns = await servicioEstudiante.verificarInscripcion({ matricula, id });
+
+        setInscrito(responseIns.data ?? false);
+
         const responseGimnasio = await servicioGimnasio.obtenerGimnasio(id);
-        setGimnasio(responseGimnasio.data);
-  
-        const docentesTemp = [];
-        const docentesMatriculas = [
-          responseGimnasio.data.emp_docente_1,
-          responseGimnasio.data.emp_docente_2,
-          responseGimnasio.data.emp_docente_3
-        ].filter(Boolean);
-  
-        for (const matricula of docentesMatriculas) {
-          if (matricula) {
-            console.log(matricula);
-            const responseDocente = await servicioDocente.obtenerPerfilDocente(matricula);
-            docentesTemp.push(responseDocente.data);
-          }
+        const matricula_doc = responseGimnasio.data.emp_docente;
+
+        if (matricula_doc) {
+          const responseDocente = await servicioDocente.obtenerPerfilDocente(matricula_doc);
+          setDocente(responseDocente.data);
+        } else {
+          setDocente(null);
         }
-        setDocentes(docentesTemp);
-  
+
         const responseHorarios = await servicioGimnasio.obtenerHorariosGimnasio(id);
         setAlumno(response.data);
-        setHorarios(responseHorarios.data);
+        setHorarios(responseHorarios.data || {});
+        setGimnasio(responseGimnasio.data);
       } catch (err) {
         setError(err.response?.data?.error || "Error al cargar la información del Gimnasio");
       }
     };
-  
+
     if (id) {
       cargarInformacionGimnasio();
     }
@@ -65,25 +56,25 @@ export default function InformacionGimnasio() {
   const handleInscrp = async (e) => {
     e.preventDefault();
     try {
-        await servicioEstudiante.inscribirTaller({ matricula: alumno.matricula, taller_id: gimnasio.id });
-        setInscrito(true);
-        Swal.fire({
-          title: '¡Inscrito!',
-          text: 'Se ha inscrito correctamente.',
-          confirmButtonText: 'Aceptar',
-          background: '#fff',
-          iconColor: '#721c24',
-          confirmButtonColor: '#155724',
-        });
+      await servicioEstudiante.inscribirGimnasio({ matricula: alumno.matricula, gimnasio_id: gimnasio.id });
+      setInscrito(true);
+      Swal.fire({
+        title: '¡Inscrito!',
+        text: 'Se ha inscrito correctamente.',
+        confirmButtonText: 'Aceptar',
+        background: '#fff',
+        iconColor: '#721c24',
+        confirmButtonColor: '#155724',
+      });
     } catch (err) {
-        setError(err.response?.data?.error || "Error al actualizar la información del alumno");
+      setError(err.response?.data?.error || "Error al actualizar la información del alumno");
     }
   };
 
   const handleAnular = async (e) => {
     e.preventDefault();
     try {
-      await servicioEstudiante.cancelarInscripcion({ matricula: alumno.matricula, taller_id: gimnasio.id });
+      await servicioEstudiante.cancelarInscripcionGim({ matricula: alumno.matricula, gimnasio_id: gimnasio.id });
       setInscrito(false);
       Swal.fire({
         title: '¡Inscripción anulada!',
@@ -115,7 +106,7 @@ export default function InformacionGimnasio() {
           <div className="col-md-4">
             <img
               src={gimnasio.imagen || "https://via.placeholder.com/300"}
-              alt={gimnasio.nombre}
+              alt={gimnasio.nombre_gim}
               className="img-fluid rounded"
             />
           </div>
@@ -141,56 +132,36 @@ export default function InformacionGimnasio() {
           </div>
         </div>
 
-        {docentes && docentes.length > 0 && (
+        {docente && (
           <div className="mt-4 border p-3 rounded shadow-sm">
-            <h4>Docentes Responsables</h4>
-            {docentes.map((docente, index) => (
-              <div key={index} className="mb-3">
-                <p><strong>Nombre:</strong> {docente.nombre} {docente.apellido_pat} {docente.apellido_mat}</p>
-                <p><strong>Especialidad:</strong> {docente.especialidad}</p>
-                <p><strong>Contacto:</strong> {docente.num_celular}</p>
-                {index < docentes.length - 1 && <hr />}
-              </div>
-            ))}
+            <h4>Docente Responsable</h4>
+            <p><strong>Nombre:</strong> {docente.nombre} {docente.apellido_pat} {docente.apellido_mat}</p>
+            <p><strong>Especialidad:</strong> {docente.especialidad}</p>
+            <p><strong>Contacto:</strong> {docente.num_celular}</p>
           </div>
         )}
 
-      <div className="row">
-        <div className="col-md-12">
-          <div className="border p-3 rounded shadow-sm">
-            <h4>Horarios Disponibles</h4>
-            <table className="table table-bordered text-center">
-              <thead className="table-success">
-                <tr>
-                  <th>Hora</th>
-                  <th>Lunes</th>
-                  <th>Martes</th>
-                  <th>Miércoles</th>
-                  <th>Jueves</th>
-                  <th>Viernes</th>
-                  <th>Sábado</th>
+        <div className="border p-3 rounded shadow-sm mt-4">
+          <h4>Horarios Disponibles</h4>
+          <table className="table table-bordered text-center">
+            <thead className="table-success">
+              <tr>
+                <th>Hora</th>
+                {["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"].map(dia => <th key={dia}>{dia}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"].map(hora => (
+                <tr key={hora}>
+                  <td>{hora}</td>
+                  {["lunes", "martes", "miercoles", "jueves", "viernes"].map(dia => (
+                    <td key={dia} className={horarios[dia]?.includes(hora) ? "bg-success text-white" : "bg-secondary"}></td>
+                  ))}
                 </tr>
-              </thead>
-              <tbody>
-                {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"].map((hora, idx) => (
-                  <tr key={idx}>
-                    <td>{hora}</td>
-                    {["lunes", "martes", "miercoles", "jueves", "viernes", "sabado"].map((dia, index) => (
-                      <td key={index} 
-                          style={{
-                            backgroundColor: horarios && horarios[dia]?.includes(hora) ? '#28a745' : '#6c757d', 
-                            color: '#fff'
-                          }} 
-                      ></td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </div>
-
       </section>
     </div>
   );

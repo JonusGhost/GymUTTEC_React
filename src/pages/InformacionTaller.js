@@ -27,10 +27,8 @@ export default function InformacionTaller() {
         }
         const matricula = user.idUsuario;
         const response = await servicioEstudiante.obtenerPerfilEstudiante(matricula);
-        
-        // Verificar inscripción, se espera un valor booleano
         const responseIns = await servicioEstudiante.verificarInscripcion(matricula, id);
-        setInscrito(!!responseIns.data);  // Asegurarse de que sea un valor booleano
+        setInscrito(!!responseIns.data);
         
         const responseTaller = await servicioTaller.obtenerTaller(id);
         const matricula_doc = responseTaller.data.emp_docente;
@@ -157,14 +155,13 @@ export default function InformacionTaller() {
                   <th>Miércoles</th>
                   <th>Jueves</th>
                   <th>Viernes</th>
-                  <th>Sábado</th>
                 </tr>
               </thead>
               <tbody>
                 {["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"].map((hora, idx) => (
                   <tr key={idx}>
                     <td>{hora}</td>
-                    {["lunes", "martes", "miercoles", "jueves", "viernes", "sabado"].map((dia, index) => (
+                    {["lunes", "martes", "miercoles", "jueves", "viernes"].map((dia, index) => (
                       <td key={index} 
                           style={{
                             backgroundColor: horarios[dia]?.includes(hora) ? '#28a745' : '#6c757d', 

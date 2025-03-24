@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { servicioGimnasio } from "../services/userService";
-import { servicioDocente } from "../services/userService";
 import Swal from 'sweetalert2';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -16,7 +15,6 @@ export default function InformacionAdmin() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const [GimnasiosExplorar, setGimnasiosExplorar] = useState([]);
-    const [docentes, setDocentes] = useState([]);
     const [activeTab, setActiveTab] = useState("listado");
     const [idEditando, setIdEditando] = useState(null);
     const [formulario, setFormulario] = useState({
@@ -26,9 +24,7 @@ export default function InformacionAdmin() {
         numeroAlumnos: "",
         imagen: null,
         horario: {},
-        docenteId_1: "",
-        docenteId_2: "",
-        docenteId_3: "",
+        docenteId: "",
     });
 
     useEffect(() => {
@@ -40,9 +36,7 @@ export default function InformacionAdmin() {
                     return;
                 }
                 const responseGimnasios = await servicioGimnasio.obtenerGimnasios();
-                const responseDocentes = await servicioDocente.obtenerTodosDocentes(); // Este servicio debe devolverte los docentes
                 setGimnasiosExplorar(responseGimnasios.data);
-                setDocentes(responseDocentes.data);
             } catch (err) {
                 setError(err.response?.data?.error || "Error al cargar la información del admin");
             }
@@ -95,9 +89,7 @@ export default function InformacionAdmin() {
             numeroAlumnos: "",
             imagen: null,
             horario: {},
-            docenteId_1: "",
-            docenteId_2: "",
-            docenteId_3: "",
+            docenteId: "",
         });
     };
 
@@ -131,9 +123,7 @@ export default function InformacionAdmin() {
             descripcion: taller.descripcion,
             enlaceGrupo: taller.enlace_grupo,
             numeroAlumnos: taller.num_alumnos,
-            docenteId_1: taller.emp_docente_1,
-            docenteId_2: taller.emp_docente_2,
-            docenteId_3: taller.emp_docente_3,
+            docenteId: taller.emp_docente,
             horario: typeof taller.horario === "string" ? JSON.parse(taller.horario) : taller.horario || {},
             imagen: null, 
         });
@@ -153,8 +143,6 @@ export default function InformacionAdmin() {
             imagen: formulario.imagen,
             horario: JSON.stringify(formulario.horario),
             emp_docente_1: formulario.docenteId_1,
-            emp_docente_2: formulario.docenteId_2,
-            emp_docente_3: formulario.docenteId_3,
         };
 
         console.log(datosActualizados);
@@ -208,9 +196,9 @@ export default function InformacionAdmin() {
                             <Nav className="me-auto">
                                 <Nav.Link href="/TalleresGestion" className="text-white">Talleres</Nav.Link>
                                 <NavDropdown title={<span className="text-white">Usuarios</span>} id="nav-basic-nav-dropdown">
-                                    <NavDropdown.Item href="/">Administradores</NavDropdown.Item>
+                                    <NavDropdown.Item href="/AdministradoresGestion">Administradores</NavDropdown.Item>
                                     <NavDropdown.Item href="/AlumnosGestion">Alumnos</NavDropdown.Item>
-                                    <NavDropdown.Item href="/">Docentes</NavDropdown.Item>
+                                    <NavDropdown.Item href="/DocentesGestion">Docentes</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link href="/InformacionAdmin" className="text-white">Datos</Nav.Link>
                             </Nav>
@@ -285,57 +273,6 @@ export default function InformacionAdmin() {
                             <div className="mb-3">
                                 <label className="form-label">Número de alumnos</label>
                                 <input type="number" className="form-control" name="numeroAlumnos" value={formulario.numeroAlumnos} onChange={handleChange}/>
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">Fitness Coach 1</label>
-                                <select 
-                                    name="docenteId_1" 
-                                    className="form-control" 
-                                    value={formulario.docenteId_1} 
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Seleccione un Coach</option>
-                                    {docentes.map(docente => (
-                                        <option key={docente.matricula} value={docente.matricula}>
-                                            {docente.nombre} {docente.apellido_pat}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                                
-                            <div className="mb-3">
-                                <label className="form-label">Fitness Coach 2</label>
-                                <select 
-                                    name="docenteId_2" 
-                                    className="form-control" 
-                                    value={formulario.docenteId_2} 
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Seleccione un Coach</option>
-                                    {docentes.map(docente => (
-                                        <option key={docente.matricula} value={docente.matricula}>
-                                            {docente.nombre} {docente.apellido_pat}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                                
-                            <div className="mb-3">
-                                <label className="form-label">Fitness Coach 3</label>
-                                <select 
-                                    name="docenteId_3" 
-                                    className="form-control" 
-                                    value={formulario.docenteId_3} 
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Seleccione un Coach</option>
-                                    {docentes.map(docente => (
-                                        <option key={docente.matricula} value={docente.matricula}>
-                                            {docente.nombre} {docente.apellido_pat}
-                                        </option>
-                                    ))}
-                                </select>
                             </div>
 
                             <div className="mb-3">

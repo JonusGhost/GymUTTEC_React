@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { servicioTaller } from "../services/userService";
-import { servicioDocente } from "../services/userService";
 import Swal from 'sweetalert2';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -16,7 +15,6 @@ export default function InformacionAdmin() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const [talleresExplorar, setTalleresExplorar] = useState([]);
-    const [docentes, setDocentes] = useState([]);
     const [activeTab, setActiveTab] = useState("listado");
     const [idEditando, setIdEditando] = useState(null);
     const [formulario, setFormulario] = useState({
@@ -38,9 +36,7 @@ export default function InformacionAdmin() {
                     return;
                 }
                 const responseTalleres = await servicioTaller.obtenerTalleres();
-                const responseDocentes = await servicioDocente.obtenerTodosDocentes(); // Este servicio debe devolverte los docentes
                 setTalleresExplorar(responseTalleres.data);
-                setDocentes(responseDocentes.data);
             } catch (err) {
                 setError(err.response?.data?.error || "Error al cargar la información del admin");
             }
@@ -151,8 +147,6 @@ export default function InformacionAdmin() {
             emp_docente: formulario.docenteId,
         };
 
-        console.log(datosActualizados);
-
         try {
             let response;
             if (idEditando) {
@@ -202,9 +196,9 @@ export default function InformacionAdmin() {
                             <Nav className="me-auto">
                                 <Nav.Link href="/GimnasiosGestion" className="text-white">Gimnasios</Nav.Link>
                                 <NavDropdown title={<span className="text-white">Usuarios</span>} id="nav-basic-nav-dropdown">
-                                    <NavDropdown.Item href="/">Administradores</NavDropdown.Item>
+                                    <NavDropdown.Item href="/AdministradoresGestion">Administradores</NavDropdown.Item>
                                     <NavDropdown.Item href="/AlumnosGestion">Alumnos</NavDropdown.Item>
-                                    <NavDropdown.Item href="/">Docentes</NavDropdown.Item>
+                                    <NavDropdown.Item href="/DocentesGestion">Docentes</NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link href="/InformacionAdmin" className="text-white">Datos</Nav.Link>
                             </Nav>
@@ -262,6 +256,11 @@ export default function InformacionAdmin() {
                         {error && <div className="alert alert-danger">{error}</div>}
                         <form className="card p-4 shadow-sm" onSubmit={handleSubmit}>
                             <div className="mb-3">
+                                <label className="form-label">Docente</label>
+                                <input type="text" className="form-control" name="emp_docente" value={formulario.emp_docente} onChange={handleChange} disabled/>
+                            </div>
+
+                            <div className="mb-3">
                                 <label className="form-label">Nombre</label>
                                 <input type="text" className="form-control" name="nombre" value={formulario.nombre} onChange={handleChange}/>
                             </div>
@@ -279,23 +278,6 @@ export default function InformacionAdmin() {
                             <div className="mb-3">
                                 <label className="form-label">Número de alumnos</label>
                                 <input type="number" className="form-control" name="numeroAlumnos" value={formulario.numeroAlumnos} onChange={handleChange}/>
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="form-label">Docente</label>
-                                <select 
-                                    name="docenteId" 
-                                    className="form-control" 
-                                    value={formulario.docenteId} 
-                                    onChange={handleChange}
-                                >
-                                    <option value="">Seleccione un docente</option>
-                                    {docentes.map(docente => (
-                                        <option key={docente.id} value={docente.matricula}>
-                                            {docente.nombre} {docente.apellido_pat}
-                                        </option>
-                                    ))}
-                                </select>
                             </div>
 
                             <div className="mb-3">

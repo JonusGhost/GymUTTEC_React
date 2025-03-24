@@ -19,6 +19,7 @@ import DocentesGestion from "./pages/DocentesGestion";
 
 // Rutas Docentes
 import InformacionDocente from "./pages/InformacionDocente";
+import ListaDocente from "./pages/PaseLista"
 
 // Rutas ---
 import InformacionGimnasio from "./pages/InformacionGimnasio";
@@ -44,6 +45,7 @@ function App() {
         
         {/* Ruta Docentes */}
         <Route path="/InformacionDocente" element={<InformacionDocente/>}></Route>
+        <Route path="/ListaDocente" element={<ListaDocente/>}></Route>
         
         {/* Ruta --- */}
         <Route path="/InformacionTaller/:id" element={<InformacionTaller/>}/>

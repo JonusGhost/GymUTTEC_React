@@ -8,16 +8,23 @@ export const servicioAutenticacion = {
 
 // Servicios para estudiantes
 export const servicioEstudiante = {
-    inscribirTaller: (datos) => api.post('estudiante/inscripcion', datos),
-    cancelarInscripcion: (datos) => api.post('/estudiante/anular', datos),
+    inscribirTaller: (datos) => api.post('estudiante/taller/inscripcion', datos),
+    cancelarInscripcion: (datos) => api.post('/estudiante/taller/anular', datos),
+
+    inscribirGimnasio: (datos) => api.post('estudiante/gimnasio/inscripcion', datos),
+    cancelarInscripcionGim: (datos) => api.post('/estudiante/gimnasio/anular', datos),
+
     obtenerActividades: (matricula) => api.get(`/estudiante/${matricula}/actividades`),
-    obtenerDetallesTaller: (id) => api.get(`/taller/${id}`),
     
     actualizarPerfilEstudiante: (datos) => api.post('/estudiante/guardar', datos),
     verificarInscripcion: (datos) => api.get('estudiante/taller' ,datos),
     obtenerPerfilEstudiante: (matricula) => api.get(`/estudiante/${matricula}`),
     
-    obtenerTalleresInscritos: (matricula) => api.get(`/inscripcion/estudiante/${matricula}`),
+    obtenerTalleresInscritos: (matricula) => api.get(`/inscripcion/taller/estudiante/${matricula}`),
+    obtenerDetallesTaller: (id) => api.get(`/taller/${id}`),
+    
+    obtenerGimnasioInscritos: (matricula) => api.get(`/inscripcion/gimnasio/estudiante/${matricula}`),
+    obtenerDetallesGimnasio: (id) => api.get(`/gimnasio/${id}`),
 };
 
 // Servicios para docentes
@@ -42,7 +49,7 @@ export const servicioAdmin = {
     asignarDocenteTaller: (matricula, tallerId) => api.post(`/administrador/talleres/asignar-docente/${matricula}/${tallerId}`),
     
     bajaDocenteGimnasio: (datos) => api.post('/administrador/gimnasio/baja-docente', datos),
-    asignarDocenteGimnasio: (datos) => api.post('/administrador/gimnasio/asignar-docente', datos),
+    asignarDocenteGimnasio: (matricula, tallerId) => api.post(`/administrador/gimnasio/asignar-docente/${matricula}/${tallerId}`),
 };
 
 // Servicios para asistencia
@@ -58,7 +65,6 @@ export const servicioTaller = {
     eliminarTaller: (id) => api.delete(`/taller/eliminar/${id}`),
     obtenerTalleres: () => api.get('/talleres'),
     obtenerTaller: (id) => api.get(`/taller/${id}`),
-
     obtenerHorariosTaller: (id) => api.get(`talleres/horario/${id}`)
 };
 
@@ -68,6 +74,5 @@ export const servicioGimnasio = {
     eliminarGimnasio: (id) => api.delete(`/gimnasio/eliminar/${id}`),
     obtenerGimnasios: () => api.get('/gimnasios'),
     obtenerGimnasio: (id) => api.get(`/gimnasio/${id}`),
-    
     obtenerHorariosGimnasio: (id) => api.get(`gimnasios/horario/${id}`)
 };
